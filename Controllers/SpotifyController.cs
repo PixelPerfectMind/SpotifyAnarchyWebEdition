@@ -4,6 +4,8 @@ using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace SpotifyAnarchyWebEdition.Controllers {
@@ -57,7 +59,11 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             return View();
         }
 
-        public ActionResult SearchView(string query, string type, string market) {
+        public ActionResult SearchView(string query, string type, string market)
+        {
+            ObservableCollection<Song> Songs = new ObservableCollection<Song>();
+            ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
+
             ViewBag.Query = Request.QueryString["query"];
             ViewBag.Market = Request.QueryString["market"];
 
@@ -86,23 +92,36 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                         return View();
                     }
 
-                    // Deserialize response
-                    List<PlaylistItem> list = new List<PlaylistItem>();
-                    dynamic json = JsonConvert.DeserializeObject(response.Content);
-                    foreach (var item in json.albums.items) {
-                        PlaylistItem playlistItem = new PlaylistItem();
-                        playlistItem.Name = item.name;
-                        playlistItem.Id = item.id;
-                        playlistItem.LinkToSpotify = item.external_urls.spotify;
-                        playlistItem.ImageUrl = item.images[0].url;
-                        playlistItem.Description = item.album_type;
-                        list.Add(playlistItem);
+                    // Read the response
+                    var responseString = response.Content;
+                    
+                    // Parse the response
+                    var json = JObject.Parse(responseString);
+
+                    // If type is album, add the albums to the list
+                    if(Request.QueryString["type"] == "playlist") {
+                        var playlists = json["playlists"]["items"].Children().ToList();
+                        // Add the albums to the list
+                        foreach (var playlist in playlists) {
+                            Playlists.Add(new Playlist(playlist["id"].ToString(), playlist["name"].ToString(),
+                                playlist["images"][3]["url"].ToString(), playlist["description"].ToString(), playlist["uri"].ToString()));
+                        }
+                    }
+
+                    // If type is single, add the songs to the list
+                    if (Request.QueryString["type"] == "track") {
+                        var tracks = json["tracks"]["items"].Children().ToList();
+                        // Add the albums to the list
+                        foreach (var track in tracks) {
+                            Songs.Add(new Song(track["id"].ToString(), track["name"].ToString(), track["artists"][0]["name"].ToString(),
+                                track["album"][0]["name"].ToString(), track["images"][3]["url"].ToString(), track["uri"].ToString()));
+                        }
                     }
 
 
-                    // Return playlistItems to view
-                    ViewBag.Playlists = list;
-                    ViewBag.Content = response.Content;
+                        ViewBag.Playlists = Playlists;
+                        ViewBag.Songs = Songs;
+
                 } catch (Exception ex) {
                     ViewBag.Content = "null";
                     ViewBag.Error = ex.Message;
