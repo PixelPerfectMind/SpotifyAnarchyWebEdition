@@ -1,0 +1,38 @@
+﻿@{
+    if (ViewBag.Succeeded)
+    {
+        // If authentication was successful, display the following:
+        ViewBag.Title = "Authentifizierung erfolgreich";
+
+        <h2>@ViewBag.Title</h2>
+        <div>
+            <p>Dein Access Token lautet: @ViewBag.AccessToken</p>
+            <p>Dein Refresh Token lautet: @ViewBag.RefreshToken</p>
+            <p>Dein Access Token läuft in @ViewBag.ExpiresIn Minuten ab!</p>
+        </div>
+
+        <h4>Da du jetzt angemeldet bist, was möchtest du jetzt machen?</h4>
+        <div>
+            <a href="/spotify/me">Meine Profildetails anzeigen</a>
+        </div>
+        <div>
+            <a href="/spotify/me">Meine Playlists anzeigen</a>
+        </div>
+        <div>
+            <a href="/search">Inhalte durchsuchen</a>
+        </div>
+    }
+    else
+    {
+        // Otherwise, display the following:
+        ViewBag.Title = "Authentifizierung fehlgeschlagen";
+
+        <div>
+            <p>Dein Access Token lautet: @ViewBag.Exception</p>
+        </div>
+    }
+}
+<main>
+
+</main>
+

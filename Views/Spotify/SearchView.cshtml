@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Inhalte durchsuchen";
+}
+
+<h2>Inhalt durchsuchen</h2>
+
+<form asp-controller="Spotify" asp-action="Search" method="get">
+    <p>
+        @{
+            if (ViewBag.Query != null)
+            {
+                <input type="text" name="query" placeholder="Spotify durchsuchen" value="@ViewBag.Query" />
+            }
+            else
+            {
+                <input type="text" name="query" placeholder="Last Christmas" />
+            }
+        }
+        <input type="submit" value="Filter" />
+        <div class="mt-2">
+            <select name="type">
+                <option value="track">Single</option>
+                <option value="album">Album</option>
+                <option value="artist">Künstler</option>
+                <option value="playlist">Playlist</option>
+                <option value="show">Show</option>
+                <option value="episode">Episode</option>
+                <option value="audiobook">Hörbuch</option>
+            </select>
+            <label for="market">Land: </label>
+            @{
+                if (ViewBag.Market != null)
+                {
+                    <input type="text" name="market" placeholder="US" value="@ViewBag.Market" style="width: 4rem" />
+                }
+                else
+                {
+                    <input type="text" name="market" placeholder="US" value="DE" style="width: 4rem" />
+                }
+            }
+        </div>
+    </p>
+</form>
+
+<hr />
+
+@{
+    try
+    {
+        if (@ViewBag.Query != null)
+        {
+
+            <h3>Suchergebnisse für "@ViewBag.Query"</h3>
+            <div>
+                <h3>Playlists</h3>
+                <div class="row">
+                    @foreach (var item in ViewBag.Playlists) {
+                        <div class="col-3">
+                            <a href="@item.external_urls.spotify" target="_blank">
+                                <img src="@item.album.images[0].url" alt="@item.name" class="img-fluid" />
+                            </a>
+                            <h4>@item.name</h4>
+                            <p>@item.artists[0].name</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    catch (Exception ex)
+    {
+        <h3>Leider ist bei der Verarbeitung Ihrer Suchanfrage ein Fehler aufgetreten.</h3>
+        <span><b>Frontend: </b>@ex.Message</span><br />
+        <span><b>Backend: </b>@ViewBag.Error</span>
+    }
+}

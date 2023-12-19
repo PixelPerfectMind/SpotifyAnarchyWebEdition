@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+    <a href="https://accounts.spotify.com/authorize?client_id=3eac98750c8f4f4da6dbf4dc63d182b6&response_type=code&redirect_uri=https://localhost:44394/oauth&state=static&scope=user-read-private user-read-email">
+        <img src="~/Content/Images/Spotify_OAuth_button.png" height="32px" alt="Mit Spotify anmelden" />
+    </a>
+
+    <h3>Die neusten Alben</h3>
+    @{
+        try
+        {
+            <div class="row">
+                @foreach (var item in ViewBag.NewAlbums)
+                {
+                    <div class="col-3">
+                        <a href="@item.Uri" target="_blank">
+                            <img src="@item.ImageUrl" class="img-fluid" />
+                        </a>
+                        <p class="mt-2">
+                            <b>@item.Name</b>
+                        </p>
+                    </div>
+                }
+            </div>
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Error = ex.Message;
+            ViewBag.FrontendError = ex.ToString();
+        }
+    }
+
+    @{
+        if (@ViewBag.Error != null || ViewBag.FrontendError != null) {
+
+            <div class="rounded shadow text-white p-2" style="background: red;">
+                <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+                <div class="mt-2" style="background: red;">
+                    <b>Frontend: </b>@ViewBag.FrontendError <br />
+                </div>
+                <div class="mt-2" style="background: red;">
+                    <b>Backend: </b>@ViewBag.Error <br />
+                </div>
+            </div>
+        }
+    }
+</main>

@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "defaultDestination": "Content/",
+  "libraries": [
+    {
+      "library": "tailwindcss@2.2.19",
+      "name": "tailwindcss",
+      "version": "2.0.2",
+      "js": [
+        "https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css"
+      ],
+      "destination": "Content/TailwindCSS"
+    }
+  ]
+}
