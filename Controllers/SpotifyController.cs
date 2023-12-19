@@ -1,24 +1,20 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace SpotifyAnarchyWebEdition.Controllers
-{
+namespace SpotifyAnarchyWebEdition.Controllers {
 
-    public class SpotifyController : Controller
-    {
+    public class SpotifyController : Controller {
 
         // GET: Spotify OAuth Callback
         public ActionResult AuthCallback(string code) {
             try {
                 DefaultValues defaultValues = new DefaultValues();
 
-                ViewBag.Succeeded = true;
                 var client = new RestClient();
                 var request = new RestRequest("https://accounts.spotify.com/api/token", Method.Post);
                 request.AddHeader("Authorization", "Basic " + defaultValues.basicAuthorization);
@@ -46,12 +42,16 @@ namespace SpotifyAnarchyWebEdition.Controllers
                 // Expires in to minutes
                 ViewBag.ExpiresIn = apiResponse.ExpiresIn / 60;
 
+                GetUserProfile();
 
+                if (Session["SpotifyUser"] != null) {
+                    SpotifyUser spotifyUser = new SpotifyUser();
+                    spotifyUser = (SpotifyUser)Session["SpotifyUser"];
+                    ViewBag.User = spotifyUser;
+                }
             }
-            catch (Exception ex)
-            {
-                ViewBag.Succeeded = false;
-                ViewBag.Exception = ex.Message;
+            catch (Exception ex) {
+                ViewBag.Error = ex.Message;
             }
 
             return View();
@@ -74,11 +74,7 @@ namespace SpotifyAnarchyWebEdition.Controllers
                 !String.IsNullOrEmpty(Request.QueryString["market"])) {
                 //perform search and display results
                 try {
-                    var options = new RestClientOptions()
-                    {
-                        MaxTimeout = -1,
-                    };
-                    var client = new RestClient(options);
+                    var client = new RestClient();
                     var request = new RestRequest("https://api.spotify.com/v1/search?q=" + ViewBag.Query + "&type=" + Request.QueryString["type"] + "&market=" + ViewBag.Market, Method.Get);
                     request.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
                     RestResponse response = client.Execute(request);
@@ -114,6 +110,79 @@ namespace SpotifyAnarchyWebEdition.Controllers
             }
 
             return View();
+        }
+
+        private void GetUserProfile() {
+            try {
+                // Initialize SpotifyUserProfileAPIResponse
+                SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
+
+                if (Session["SpotifyUserProfileAPIResponse"] != null) {
+                    // If session exists, get it and load it into the new object
+                    spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+
+                    var client = new RestClient();
+                    var request = new RestRequest("https://api.spotify.com/v1/me", Method.Get);
+                    request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                    RestResponse response = client.Execute(request);
+                    Console.WriteLine(response.Content);
+
+                    // Check if response is OK
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        // Parse the response and store it in a SpotifyUser object
+                        var json = JObject.Parse(response.Content);
+
+                        SpotifyUser spotifyUser = new SpotifyUser();
+                        spotifyUser.Country = json["country"].ToString();
+                        spotifyUser.DisplayName = json["display_name"].ToString();
+                        spotifyUser.Email = json["email"].ToString();
+
+                        if (json["explicit_content"]["filter_enabled"].ToString() == "true") {
+                            spotifyUser.ExplicitContentEnabled = false;
+                        } else {
+                            spotifyUser.ExplicitContentEnabled = true;
+                        }
+
+                        if (json["explicit_content"]["filter_locked"].ToString() == "true") {
+                            spotifyUser.ExplicitContentAllowed = false;
+                        } else {
+                            spotifyUser.ExplicitContentAllowed = true;
+                        }
+
+                        spotifyUser.SpotifyProfileUrl = json["external_urls"]["spotify"].ToString();
+                        spotifyUser.TotalFollowers = Convert.ToInt32(json["followers"]["total"]);
+                        spotifyUser.SpotifyId = json["id"].ToString();
+                        spotifyUser.ImageUrl = json["images"][0]["url"].ToString();
+                        spotifyUser.Type = json["type"].ToString();
+                        spotifyUser.Uri = json["uri"].ToString();
+
+                        // Save the SpotifyUser object in the session
+                        Session["SpotifyUser"] = spotifyUser;
+                    } else {
+                        ViewBag.Error = "Error getting your user profile: " + response.Content;
+                    }
+                } else {
+                    ViewBag.Error = "Error getting your user profile: You are not signed in.";
+                }
+
+            } catch (Exception ex) {
+                ViewBag.Error = ex.Message;
+            }
+        }
+
+        public ActionResult UserProfileView() {
+            if (Session["SpotifyUser"] != null) {
+                try {
+                    SpotifyUser spotifyUser = new SpotifyUser();
+                    spotifyUser = (SpotifyUser)Session["SpotifyUser"];
+                    ViewBag.User = spotifyUser;
+                } catch (Exception ex) {
+                    ViewBag.Error = ex.Message;
+                }
+                return View();
+            } else {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

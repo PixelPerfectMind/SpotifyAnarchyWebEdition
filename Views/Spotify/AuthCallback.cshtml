@@ -1,38 +1,54 @@
-﻿@{
-    if (ViewBag.Succeeded)
-    {
-        // If authentication was successful, display the following:
-        ViewBag.Title = "Authentifizierung erfolgreich";
+﻿<main>
+@{
+    if (@ViewBag.Error == null) {
+        try {
 
-        <h2>@ViewBag.Title</h2>
-        <div>
-            <p>Dein Access Token lautet: @ViewBag.AccessToken</p>
-            <p>Dein Refresh Token lautet: @ViewBag.RefreshToken</p>
-            <p>Dein Access Token läuft in @ViewBag.ExpiresIn Minuten ab!</p>
-        </div>
+            // If authentication was successful, display the following:
+            ViewBag.Title = "Authentifizierung erfolgreich";
 
-        <h4>Da du jetzt angemeldet bist, was möchtest du jetzt machen?</h4>
-        <div>
-            <a href="/spotify/me">Meine Profildetails anzeigen</a>
-        </div>
-        <div>
-            <a href="/spotify/me">Meine Playlists anzeigen</a>
-        </div>
-        <div>
-            <a href="/search">Inhalte durchsuchen</a>
-        </div>
-    }
-    else
-    {
+            if (ViewBag.User != null) {
+                <div>
+                    <img src="@ViewBag.User.ImageUrl" class="h-10 w-10 object-cover rounded-full" />
+                    <p class="text-xl font-bold">Guten Tag, @ViewBag.User.DisplayName!</p>
+                    <p>@ViewBag.User.Email</p>
+                </div>
+            }
+
+            <h2>@ViewBag.Title</h2>
+            <div>
+                <p>Dein Access Token lautet: @ViewBag.AccessToken</p>
+                <p>Dein Refresh Token lautet: @ViewBag.RefreshToken</p>
+                <p>Dein Access Token läuft in @ViewBag.ExpiresIn Minuten ab!</p>
+            </div>
+
+            <h4>Da du jetzt angemeldet bist, was möchtest du machen?</h4>
+            <div>
+                <a href="/profile">Meine Profildetails anzeigen</a>
+            </div>
+            <div>
+                <a href="/spotify/me">Meine Playlists anzeigen</a>
+            </div>
+            <div>
+                <a href="/search">Inhalte durchsuchen</a>
+            </div>
+        } catch (Exception ex) {
+            ViewBag.FrontendError = ex.Message;
+            throw ex;
+        }
+    } else {
         // Otherwise, display the following:
         ViewBag.Title = "Authentifizierung fehlgeschlagen";
-
-        <div>
-            <p>Dein Access Token lautet: @ViewBag.Exception</p>
+        
+        <div class="rounded shadow text-white py-2 px-3" style="background: red;">
+            <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+            <div class="mt-2" style="background: red;">
+                <b>Frontend: </b>@ViewBag.FrontendError<br />
+            </div>
+            <div class="mt-2" style="background: red;">
+                <b>Backend: </b>@ViewBag.Error<br />
+            </div>
         </div>
+        }
     }
-}
-<main>
 
 </main>
-
