@@ -12,7 +12,9 @@ namespace SpotifyAnarchyWebEdition.Controllers {
 
     public class SpotifyController : Controller {
 
-        // GET: Spotify OAuth Callback
+        /// <summary>
+        /// Spotify OAuth2.0 Callback
+        /// </summary>
         public ActionResult AuthCallback(string code) {
             try {
                 DefaultValues defaultValues = new DefaultValues();
@@ -59,8 +61,10 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             return View();
         }
 
-        public ActionResult SearchView(string query, string type, string market)
-        {
+        /// <summary>
+        /// Opens the search page and/or performs a search
+        /// </summary>
+        public ActionResult SearchView(string query, string type, string market) {
             ObservableCollection<Song> Songs = new ObservableCollection<Song>();
             ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
 
@@ -117,20 +121,21 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                                 track["album"][0]["name"].ToString(), track["images"][3]["url"].ToString(), track["uri"].ToString()));
                         }
                     }
-
-
-                        ViewBag.Playlists = Playlists;
-                        ViewBag.Songs = Songs;
+                    ViewBag.Playlists = Playlists;
+                    ViewBag.Songs = Songs;
 
                 } catch (Exception ex) {
                     ViewBag.Content = "null";
                     ViewBag.Error = ex.Message;
                 }
             }
-
             return View();
         }
 
+        /// <summary>
+        /// Get the user profile which belongs to the Spotify Account
+        /// <br>and save it into the Session</br>
+        /// </summary>
         private void GetUserProfile() {
             try {
                 // Initialize SpotifyUserProfileAPIResponse
@@ -189,6 +194,9 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             }
         }
 
+        /// <summary>
+        /// Shows up the user profile page
+        /// </summary>
         public ActionResult UserProfileView() {
             if (Session["SpotifyUser"] != null) {
                 try {
@@ -202,6 +210,75 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             } else {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        /// <summary>
+        /// Displays the playlist page
+        /// </summary>
+        public ActionResult AlbumView(string albumId) {
+            if (Session["SpotifyUser"] != null) {
+                try {
+                    // Load instance of SpotifyUser from session
+                    SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
+                    spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+
+                    var client = new RestClient();
+                    var request = new RestRequest("https://api.spotify.com/v1/albums/" + albumId, Method.Get);
+                    request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                    RestResponse response = client.Execute(request);
+                    Console.WriteLine(response.Content);
+
+                    // Check if response is OK
+                    if(response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        // Parse the response and store it in a SpotifyUser object
+                        var json = JObject.Parse(response.Content);
+
+                        Album album = new Album(json["id"].ToString(), json["name"].ToString(), json["artists"][0]["name"].ToString(),
+                            json["images"][1]["url"].ToString(), json["uri"].ToString(), json["release_date"].ToString());
+
+                        ViewBag.Album = album;
+                    }
+
+                } catch (Exception ex) {
+                    ViewBag.Error = ex.Message;
+                }
+                return View();
+            } else {
+                GetBasicBearerToken();
+                if(Session["BearerTokenForPublicUses"] != null) {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// Get a new bearer token, with basic permissions.
+        /// </summary>
+        private void GetBasicBearerToken() {
+            DefaultValues defaultValues = new DefaultValues();
+
+            var client = new RestClient();
+            var request = new RestRequest("https://accounts.spotify.com/api/token", Method.Post);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddParameter("grant_type", "client_credentials");
+            request.AddParameter("client_id", defaultValues.ClientId);
+            request.AddParameter("client_secret", defaultValues.ClientSecret);
+            RestResponse response = client.Execute(request);
+
+            // Check if response is OK
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                // Parse the response
+                var json = JObject.Parse(response.Content);
+                var bearerToken = json["access_token"].ToString();
+                Session["BearerTokenForPublicUses"] = bearerToken;
+            }
+        }
+
+        public ActionResult Logout() {
+            Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

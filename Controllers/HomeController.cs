@@ -19,9 +19,22 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     GetNewRecommandations();
                 } else {
                     // Get the newest albums from the session
-                    NewRecommandations = (ObservableCollection<Playlist>)Session["NewestRecommandations"];
+                    NewRecommandations = (ObservableCollection<Album>)Session["NewestRecommandations"];
                 }
                 ViewBag.NewAlbums = NewRecommandations;
+
+                // Get current user
+                if (Session["SpotifyUser"] != null) {
+                    try {
+                        SpotifyUser spotifyUser = new SpotifyUser();
+                        spotifyUser = (SpotifyUser)Session["SpotifyUser"];
+
+                        ViewBag.UserName = spotifyUser.DisplayName;
+                        ViewBag.UserImagePath = spotifyUser.ImageUrl;
+                    } catch (Exception ex) {
+                        ViewBag.Error = ex.Message;
+                    }
+                }
             } catch (Exception ex) {
                 ViewBag.Error = ex.Message;
             }
@@ -46,7 +59,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         /// <summary>
         /// Contains the entries for the newest albums
         /// </summary>
-        public ObservableCollection<Playlist> NewRecommandations = new ObservableCollection<Playlist>();
+        public ObservableCollection<Album> NewRecommandations = new ObservableCollection<Album>();
 
         /// <summary>
         /// Get a new bearer token, which allows you to access the Spotify API
@@ -95,11 +108,13 @@ namespace SpotifyAnarchyWebEdition.Controllers {
 
                 // Add the albums to the list
                 foreach (var album in albums) {
-                    NewRecommandations.Add(new Playlist(album["id"].ToString(), album["name"].ToString(), album["images"][2]["url"].ToString(), album["artists"][0]["name"].ToString(), album["uri"].ToString()));
+                    NewRecommandations.Add(new Album(album["id"].ToString(), album["name"].ToString(), album["artists"][0]["name"].ToString(),
+                        album["images"][1]["url"].ToString(), album["uri"].ToString(), ""));
                 }
 
                 // Save the list in the session
                 Session["NewestRecommandations"] = this.NewRecommandations;
+                ViewBag.NewAlbums = NewRecommandations;
             } catch (Exception ex) {
                 ViewBag.Error = ex.Message;
             }

@@ -1,0 +1,47 @@
+﻿@{
+    try
+    {
+        ViewBag.Title = "Alben-Ansicht";
+
+        <table style="height: 300px; width: 100%;">
+            <colgroup>
+                <col style="width: 300px;" />
+                <col style="width: calc(100% - 300px);" />
+            </colgroup>
+            <tr>
+                <td>
+                    <!-- Album cover image -->
+                    <img src="@ViewBag.Album.ImageUrl" alt="Albumcover für @ViewBag.Album.Name" />
+                </td>
+                <td>
+                    <div class="ml-2">
+                        <!-- Album metadata -->
+                        <h1>@ViewBag.Album.Name</h1>
+                        <div class="mt-2">
+                            <b>Künstler-/in: </b>@ViewBag.Album.Artist
+                        </div>
+                        <div class="mt-1">
+                            <b>Veröffentlicht am: </b>@ViewBag.Album.ReleaseDate
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+
+    }
+    catch (Exception ex)
+    {
+
+        <div class="rounded shadow text-white p-2" style="background: red;">
+            <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+            <div class="mt-2" style="background: red;">
+                <b>Frontend: </b>@ex.Message <br />
+            </div>
+            <div class="mt-2" style="background: red;">
+                <b>Backend: </b>@ViewBag.Error <br />
+            </div>
+        </div>
+    }
+}

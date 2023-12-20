@@ -22,13 +22,28 @@ namespace SpotifyAnarchyWebEdition {
                 defaults: new { controller = "Spotify", action = "SearchView" }
             );
 
-            // Search route
+            // User profile page route
             routes.MapRoute(
                 name: "ViewUserProfile",
                 url: "profile",
                 defaults: new { controller = "Spotify", action = "UserProfileView" }
             );
 
+            // View album route
+            routes.MapRoute(
+                name: "ViewAlbum",
+                url: "album",
+                defaults: new { controller = "Spotify", action = "AlbumView" }
+            );
+
+            // Logout
+            routes.MapRoute(
+                name: "Logout",
+                url: "logout",
+                defaults: new { controller = "Spotify", action = "Logout" }
+            );
+
+            // Default fallback route
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

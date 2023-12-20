@@ -193,6 +193,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\ControlElements.css" />
+    <Content Include="Content\svg\light\ic_profile.svg" />
+    <Content Include="Content\svg\light\ic_search.svg" />
+    <Content Include="Content\Images\spotify-anarchy.logo.png" />
     <Content Include="Content\Images\Spotify_OAuth_button.png" />
     <Content Include="Content\TailwindCSS\base.css" />
     <Content Include="Content\TailwindCSS\base.min.css" />
@@ -244,6 +248,7 @@
     <Content Include="Views\Profile.cshtml" />
     <Content Include="Views\Spotify\SearchView.cshtml" />
     <Content Include="Views\Spotify\UserProfileView.cshtml" />
+    <Content Include="Views\Spotify\AlbumView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
