@@ -1,0 +1,60 @@
+﻿.oauth-button {
+    transition-duration: 1s;
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius:12px;
+}
+
+    .oauth-button :hover {
+        opacity: 0.8;
+        transform: scale(1.02);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+    }
+
+.oauth-button :active {
+    opacity: 1;
+    filter: brightness(0.5);
+    transform: scale(0.98);
+}
+    .oauth-button :link {
+        text-decoration: none;
+        color: black;
+    }
+
+    .oauth-button :visited {
+        color: black;
+    }
+
+.navbar {
+    background-color: #000000c2;
+    color: white;
+    position: fixed;
+    top: 0;
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    z-index: 2;
+    height: 4rem;
+    transition-duration: .2s;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px black;
+    padding: 0.5rem 1rem;
+    font-family: 'Outfit', sans-serif
+}
+
+.navbar-scrolled {
+    backdrop-filter: blur(1rem) contrast(2);
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
+}
+
+.navBarLinkButton {
+    margin-top: .6rem;
+    margin-right: 1rem;
+}
+
+.navBarLinkButton b {
+    font-size: 13px;
+}
