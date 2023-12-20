@@ -31,4 +31,23 @@
         public string Id { get; private set; }
         public string Uri { get; private set; }
     }
+
+    public class Song {
+
+        public Song(string spotifyId, string name, string artist, string album, string imageUrl, string url) {
+            this.Name = name;
+            this.Artist = artist;
+            this.Album = album;
+            this.ImageUrl = imageUrl;
+            this.Id = spotifyId;
+            this.Uri = url;
+        }
+
+        public string Name { get; private set; }
+        public string Artist { get; private set; }
+        public string Album { get; private set; }
+        public string ImageUrl { get; private set; }
+        public string Id { get; private set; }
+        public string Uri { get; private set; }
+    }
 }

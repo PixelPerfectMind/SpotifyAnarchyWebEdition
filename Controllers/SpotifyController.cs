@@ -1,24 +1,22 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Web.Mvc;
 
-namespace SpotifyAnarchyWebEdition.Controllers
-{
+namespace SpotifyAnarchyWebEdition.Controllers {
 
-    public class SpotifyController : Controller
-    {
+    public class SpotifyController : Controller {
 
         // GET: Spotify OAuth Callback
         public ActionResult AuthCallback(string code) {
             try {
                 DefaultValues defaultValues = new DefaultValues();
 
-                ViewBag.Succeeded = true;
                 var client = new RestClient();
                 var request = new RestRequest("https://accounts.spotify.com/api/token", Method.Post);
                 request.AddHeader("Authorization", "Basic " + defaultValues.basicAuthorization);
@@ -46,18 +44,26 @@ namespace SpotifyAnarchyWebEdition.Controllers
                 // Expires in to minutes
                 ViewBag.ExpiresIn = apiResponse.ExpiresIn / 60;
 
+                GetUserProfile();
 
+                if (Session["SpotifyUser"] != null) {
+                    SpotifyUser spotifyUser = new SpotifyUser();
+                    spotifyUser = (SpotifyUser)Session["SpotifyUser"];
+                    ViewBag.User = spotifyUser;
+                }
             }
-            catch (Exception ex)
-            {
-                ViewBag.Succeeded = false;
-                ViewBag.Exception = ex.Message;
+            catch (Exception ex) {
+                ViewBag.Error = ex.Message;
             }
 
             return View();
         }
 
-        public ActionResult SearchView(string query, string type, string market) {
+        public ActionResult SearchView(string query, string type, string market)
+        {
+            ObservableCollection<Song> Songs = new ObservableCollection<Song>();
+            ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
+
             ViewBag.Query = Request.QueryString["query"];
             ViewBag.Market = Request.QueryString["market"];
 
@@ -74,11 +80,7 @@ namespace SpotifyAnarchyWebEdition.Controllers
                 !String.IsNullOrEmpty(Request.QueryString["market"])) {
                 //perform search and display results
                 try {
-                    var options = new RestClientOptions()
-                    {
-                        MaxTimeout = -1,
-                    };
-                    var client = new RestClient(options);
+                    var client = new RestClient();
                     var request = new RestRequest("https://api.spotify.com/v1/search?q=" + ViewBag.Query + "&type=" + Request.QueryString["type"] + "&market=" + ViewBag.Market, Method.Get);
                     request.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
                     RestResponse response = client.Execute(request);
@@ -90,23 +92,36 @@ namespace SpotifyAnarchyWebEdition.Controllers
                         return View();
                     }
 
-                    // Deserialize response
-                    List<PlaylistItem> list = new List<PlaylistItem>();
-                    dynamic json = JsonConvert.DeserializeObject(response.Content);
-                    foreach (var item in json.albums.items) {
-                        PlaylistItem playlistItem = new PlaylistItem();
-                        playlistItem.Name = item.name;
-                        playlistItem.Id = item.id;
-                        playlistItem.LinkToSpotify = item.external_urls.spotify;
-                        playlistItem.ImageUrl = item.images[0].url;
-                        playlistItem.Description = item.album_type;
-                        list.Add(playlistItem);
+                    // Read the response
+                    var responseString = response.Content;
+                    
+                    // Parse the response
+                    var json = JObject.Parse(responseString);
+
+                    // If type is album, add the albums to the list
+                    if(Request.QueryString["type"] == "playlist") {
+                        var playlists = json["playlists"]["items"].Children().ToList();
+                        // Add the albums to the list
+                        foreach (var playlist in playlists) {
+                            Playlists.Add(new Playlist(playlist["id"].ToString(), playlist["name"].ToString(),
+                                playlist["images"][3]["url"].ToString(), playlist["description"].ToString(), playlist["uri"].ToString()));
+                        }
+                    }
+
+                    // If type is single, add the songs to the list
+                    if (Request.QueryString["type"] == "track") {
+                        var tracks = json["tracks"]["items"].Children().ToList();
+                        // Add the albums to the list
+                        foreach (var track in tracks) {
+                            Songs.Add(new Song(track["id"].ToString(), track["name"].ToString(), track["artists"][0]["name"].ToString(),
+                                track["album"][0]["name"].ToString(), track["images"][3]["url"].ToString(), track["uri"].ToString()));
+                        }
                     }
 
 
-                    // Return playlistItems to view
-                    ViewBag.Playlists = list;
-                    ViewBag.Content = response.Content;
+                        ViewBag.Playlists = Playlists;
+                        ViewBag.Songs = Songs;
+
                 } catch (Exception ex) {
                     ViewBag.Content = "null";
                     ViewBag.Error = ex.Message;
@@ -114,6 +129,79 @@ namespace SpotifyAnarchyWebEdition.Controllers
             }
 
             return View();
+        }
+
+        private void GetUserProfile() {
+            try {
+                // Initialize SpotifyUserProfileAPIResponse
+                SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
+
+                if (Session["SpotifyUserProfileAPIResponse"] != null) {
+                    // If session exists, get it and load it into the new object
+                    spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+
+                    var client = new RestClient();
+                    var request = new RestRequest("https://api.spotify.com/v1/me", Method.Get);
+                    request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                    RestResponse response = client.Execute(request);
+                    Console.WriteLine(response.Content);
+
+                    // Check if response is OK
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        // Parse the response and store it in a SpotifyUser object
+                        var json = JObject.Parse(response.Content);
+
+                        SpotifyUser spotifyUser = new SpotifyUser();
+                        spotifyUser.Country = json["country"].ToString();
+                        spotifyUser.DisplayName = json["display_name"].ToString();
+                        spotifyUser.Email = json["email"].ToString();
+
+                        if (json["explicit_content"]["filter_enabled"].ToString() == "true") {
+                            spotifyUser.ExplicitContentEnabled = false;
+                        } else {
+                            spotifyUser.ExplicitContentEnabled = true;
+                        }
+
+                        if (json["explicit_content"]["filter_locked"].ToString() == "true") {
+                            spotifyUser.ExplicitContentAllowed = false;
+                        } else {
+                            spotifyUser.ExplicitContentAllowed = true;
+                        }
+
+                        spotifyUser.SpotifyProfileUrl = json["external_urls"]["spotify"].ToString();
+                        spotifyUser.TotalFollowers = Convert.ToInt32(json["followers"]["total"]);
+                        spotifyUser.SpotifyId = json["id"].ToString();
+                        spotifyUser.ImageUrl = json["images"][0]["url"].ToString();
+                        spotifyUser.Type = json["type"].ToString();
+                        spotifyUser.Uri = json["uri"].ToString();
+
+                        // Save the SpotifyUser object in the session
+                        Session["SpotifyUser"] = spotifyUser;
+                    } else {
+                        ViewBag.Error = "Error getting your user profile: " + response.Content;
+                    }
+                } else {
+                    ViewBag.Error = "Error getting your user profile: You are not signed in.";
+                }
+
+            } catch (Exception ex) {
+                ViewBag.Error = ex.Message;
+            }
+        }
+
+        public ActionResult UserProfileView() {
+            if (Session["SpotifyUser"] != null) {
+                try {
+                    SpotifyUser spotifyUser = new SpotifyUser();
+                    spotifyUser = (SpotifyUser)Session["SpotifyUser"];
+                    ViewBag.User = spotifyUser;
+                } catch (Exception ex) {
+                    ViewBag.Error = ex.Message;
+                }
+                return View();
+            } else {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

@@ -243,6 +243,7 @@
     <Content Include="Views\Spotify\AuthCallback.cshtml" />
     <Content Include="Views\Profile.cshtml" />
     <Content Include="Views\Spotify\SearchView.cshtml" />
+    <Content Include="Views\Spotify\UserProfileView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
