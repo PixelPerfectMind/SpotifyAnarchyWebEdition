@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace SpotifyAnarchyWebEdition.Controllers {
 
@@ -103,22 +105,28 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     var json = JObject.Parse(responseString);
 
                     // If type is album, add the albums to the list
-                    if(Request.QueryString["type"] == "playlist") {
+                    if (Request.QueryString["type"] == "playlist") {
                         var playlists = json["playlists"]["items"].Children().ToList();
-                        // Add the albums to the list
                         foreach (var playlist in playlists) {
+                            var images = playlist["images"].Children();
+                            var playlistImageUrl = images.First()["url"].ToString();
                             Playlists.Add(new Playlist(playlist["id"].ToString(), playlist["name"].ToString(),
-                                playlist["images"][3]["url"].ToString(), playlist["description"].ToString(), playlist["uri"].ToString()));
+                                playlistImageUrl, playlist["description"].ToString(), playlist["uri"].ToString()));
                         }
                     }
+
 
                     // If type is single, add the songs to the list
                     if (Request.QueryString["type"] == "track") {
                         var tracks = json["tracks"]["items"].Children().ToList();
-                        // Add the albums to the list
                         foreach (var track in tracks) {
-                            Songs.Add(new Song(track["id"].ToString(), track["name"].ToString(), track["artists"][0]["name"].ToString(),
-                                track["album"][0]["name"].ToString(), track["images"][3]["url"].ToString(), track["uri"].ToString()));
+                            var artists = track["artists"].Children();
+                            var songArtist = artists.First()["name"].ToString();
+                            var albumImages = track["album"]["images"].Children();
+                            var songAlbumImageUrl = albumImages.Last()["url"].ToString();
+                            Songs.Add(new Song(track["id"].ToString(), track["name"].ToString(), songArtist,
+                                track["album"]["name"].ToString(), songAlbumImageUrl, track["uri"].ToString(),
+                                track["preview_url"].ToString()));
                         }
                     }
                     ViewBag.Playlists = Playlists;
@@ -197,12 +205,45 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         /// <summary>
         /// Shows up the user profile page
         /// </summary>
-        public ActionResult UserProfileView() {
+        public async Task<ActionResult> UserProfileView() {
             if (Session["SpotifyUser"] != null) {
                 try {
                     SpotifyUser spotifyUser = new SpotifyUser();
                     spotifyUser = (SpotifyUser)Session["SpotifyUser"];
                     ViewBag.User = spotifyUser;
+
+                    ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
+
+                    // Get current login
+                    SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
+                    spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+
+                    // API request to get the user's playlists
+                    var client = new RestClient();
+                    var request = new RestRequest("https://api.spotify.com/v1/me/playlists?limit=10&offset=0", Method.Get);
+                    request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                    RestResponse response = await client.ExecuteAsync(request);
+                    Console.WriteLine(response.Content);
+
+                    // If response is OK, parse the response
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        var json = JObject.Parse(response.Content);
+
+                        // Add playlists to the list
+                        var playlists = json["items"].Children().ToList();
+                        foreach (var playlist in playlists) {
+                            // Get the first image from the images array
+                            var images = playlist["images"].Children();
+                            var playlistImageUrl = images.First()["url"].ToString();
+
+                            // Add new playlist to the list
+                            Playlists.Add(new Playlist(playlist["id"].ToString(), playlist["name"].ToString(), playlistImageUrl, playlist["description"].ToString(), playlist["uri"].ToString()));
+                        }
+
+                        ViewBag.Playlists = Playlists;
+                    } else {
+                        ViewBag.Error = "Error getting your playlists: " + response.Content;
+                    }
                 } catch (Exception ex) {
                     ViewBag.Error = ex.Message;
                 }
@@ -215,7 +256,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         /// <summary>
         /// Displays the playlist page
         /// </summary>
-        public ActionResult AlbumView(string albumId) {
+        public async Task<ActionResult> AlbumView(string albumId) {
             if (Session["SpotifyUser"] != null) {
                 try {
                     // Load instance of SpotifyUser from session
@@ -225,7 +266,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     var client = new RestClient();
                     var request = new RestRequest("https://api.spotify.com/v1/albums/" + albumId, Method.Get);
                     request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
-                    RestResponse response = client.Execute(request);
+                    RestResponse response = await client.ExecuteAsync(request);
                     Console.WriteLine(response.Content);
 
                     // Check if response is OK
@@ -236,6 +277,28 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                         Album album = new Album(json["id"].ToString(), json["name"].ToString(), json["artists"][0]["name"].ToString(),
                             json["images"][1]["url"].ToString(), json["uri"].ToString(), json["release_date"].ToString());
 
+                        // Add songs to the album item
+                        var tracks = json["tracks"]["items"].Children().ToList();
+
+                        ObservableCollection<Song> Songs = new ObservableCollection<Song>();
+
+                        foreach (var track in tracks) {
+                            // Get the first artist from the artists array
+                            var artists = track["artists"].Children();
+                            var songArtist = artists.First()["name"].ToString();
+
+                            // Add new song to the album item
+                            Songs.Add(new Song {
+                                Name = track["name"].ToString(),
+                                Artist = songArtist,
+                                Album = json["name"].ToString(),
+                                ImageUrl = json["images"][1]["url"].ToString(),
+                                Id = track["id"].ToString(),
+                                Uri = track["uri"].ToString(),
+                                PreviewUrl = track["preview_url"].ToString()
+                            });
+                        }
+                        album.Songs = Songs;
                         ViewBag.Album = album;
                     }
 
@@ -279,6 +342,74 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         public ActionResult Logout() {
             Session.Clear();
             return RedirectToAction("Index", "Home");
+        }
+
+
+        /// <summary>
+        /// Opens the playlist page
+        /// </summary>
+        public async Task<ActionResult> PlaylistView(string playlistId) {
+            if (Session["SpotifyUserProfileAPIResponse"] != null) {
+                try {
+                    // Initialize SpotifyUserProfileAPIResponse
+                    SpotifyUserProfileAPIResponse apiResponse = new SpotifyUserProfileAPIResponse();
+                    apiResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+
+                    // API request
+                    var client = new RestClient();
+                    var request = new RestRequest("https://api.spotify.com/v1/playlists/" + playlistId, Method.Get);
+                    request.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
+                    RestResponse response = await client.ExecuteAsync(request);
+
+                    // Check if response is OK
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        // Parse the response and store it in a SpotifyUser object
+                        var json = JObject.Parse(response.Content);
+
+                        Playlist playlist = new Playlist(json["id"].ToString(), json["external_urls"]["spotify"].ToString(),
+                            Convert.ToInt32(json["followers"]["total"]), json["name"].ToString(),
+                            json["images"][0]["url"].ToString(), json["description"].ToString(), json["uri"].ToString(),
+                            json["owner"]["id"].ToString(), json["owner"]["display_name"].ToString());
+
+
+                        // Add songs to the playlist item
+                        var tracks = json["tracks"]["items"].Children().ToList();
+
+                        ObservableCollection<Song> Songs = new ObservableCollection<Song>();
+
+                        foreach (var track in tracks) {
+                            // Get the first artist from the artists array
+                            var artists = track["track"]["artists"].Children();
+                            var songArtist = artists.First()["name"].ToString();
+
+                            // Get the last image from the images array
+                            var albumImages = track["track"]["album"]["images"].Children();
+                            var songAlbumImageUrl = albumImages.Last()["url"].ToString();
+
+
+                            // Add new song to the playlist item
+                            Songs.Add(new Song {
+                                Name = track["track"]["name"].ToString(),
+                                Artist = songArtist,
+                                Album = track["track"]["album"]["name"].ToString(),
+                                ImageUrl = songAlbumImageUrl,
+                                Id = track["track"]["id"].ToString(),
+                                Uri = track["track"]["uri"].ToString(),
+                                PreviewUrl = track["track"]["preview_url"].ToString()
+                            });
+                        }
+                        playlist.Songs = Songs;
+                        ViewBag.Playlist = playlist;
+                    }
+
+                } catch (Exception ex) {
+                    ViewBag.Error = ex.Message;
+                }
+            } else {
+                // When not logged in, return to home page
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
         }
     }
 }

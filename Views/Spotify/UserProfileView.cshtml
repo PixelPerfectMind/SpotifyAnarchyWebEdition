@@ -32,64 +32,42 @@
 
             <div class="hero-image mb-4">
                 <div class="hero-blur">
-                    <div class="hero-text">
-                        <div class="mb-2">
-                            <img src="@ViewBag.User.ImageUrl" class="h-64 w-64 rounded-circle" />
+                        <div class="hero-text">
+                            <div class="mb-2">
+                                <img src="@ViewBag.User.ImageUrl" class="h-64 w-64 rounded-circle" />
+                            </div>
+                            <h1>@ViewBag.User.DisplayName</h1>
+                            <p><b>Spotify-ID: </b>@ViewBag.User.SpotifyId</p>
+                            <p><b>Landeskennung: </b>@ViewBag.User.Country</p>
+                            <a href="@ViewBag.User.SpotifyProfileUrl">Zum Spotify-Profil</a>
                         </div>
-                        <h1>@ViewBag.User.DisplayName</h1>
-                        <p>@ViewBag.User.Email</p>
-                        <p>@ViewBag.User.TotalFollowers Follower</p>
-                        <a href="@ViewBag.User.SpotifyProfileUrl">Zum Spotify-Profil</a>
-                    </div>
                 </div>
             </div>
-
-            <h3>Spotify-Abonnement-Stufe:</h3>
-            if (@ViewBag.User.Product != null)
-            {
-
-                if (@ViewBag.User.Product == "premium")
-                {
-                    <p>Spotify Premium</p>
-                }
-                else
-                {
-                    <p>Spotify Free</p>
-                }
-            }
-            else
-            {
-                <p style="color: red;">Preisstufe konnte nicht ermittelt werden.</p>
-            }
-
+    
             <div class="mt-4">
-                <h3>Land: @ViewBag.User.Country</h3>
-            </div>
-
-            <div class="mt-4">
-                <h3>Explizite Inhalte:</h3>
-                @{
-                    if (@ViewBag.User.ExplicitContentEnabled == null) {
-                        <p style="color: red;">Es konnte nicht ermittelt werden, ob Explizite Inhalte angezeigt werden.</p>
-                    } else if (@ViewBag.User.ExplicitContentEnabled == true) {
-                        <p style="color: green">Explizite Inhalte werden angezeigt.</p>
-                    } else {
-                        <p style="color: red">Explizite Inhalte werden nicht angezeigt.</p>
+                <h3>Deine Playlists</h3>
+                <div class="row">
+                    @{
+                        if (ViewBag.Playlists.Count > 0) {
+                            foreach (var item in ViewBag.Playlists) {
+                                <div class="col-2 bg-white oauth-button">
+                                    @{ string url = item.Uri.Replace("spotify:playlist:", ""); }
+                                    <a href="/playlist?playlistId=@url">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
+                                        <h4>@item.Name</h4>
+                                        <p>@item.Description</p>
+                                    </a>
+                                </div>
+                            }
+                        } else {
+                            <b>Anscheinend hast du keine Playlist in deinem Spotify-Account hinterlegt</b>
+                            }
                     }
-
-
-                    if (@ViewBag.User.ExplicitContentAllowed == null) {
-                        <p style="color: red;">Es konnte nicht ermittelt werden, ob Explizite Inhalte angezeigt dürfen.</p>
-                    } else if (@ViewBag.User.ExplicitContentAllowed == true) {
-                        <p style="color: green">Explizite Inhalte sind erlaubt.</p>
-                    } else {
-                        <p style="color: red">Explizite Inhalte sind nicht erlaubt.</p>
-                    }
-                }
+                </div>
             </div>
+                
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             <div class="rounded shadow text-white py-2 px-3" style="background: red;">
                 <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
                 <div class="mt-2" style="background: red;">

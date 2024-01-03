@@ -8,9 +8,12 @@
 <form asp-controller="Spotify" asp-action="Search" method="get">
     <p>
         @{
-            if (ViewBag.Query != null) {
+            if (ViewBag.Query != null)
+            {
                 <input type="text" name="query" placeholder="Never gonna give you up" value="@ViewBag.Query" />
-            } else {
+            }
+            else
+            {
                 <input type="text" name="query" placeholder="Last Christmas" />
             }
         }
@@ -27,9 +30,12 @@
             </select>
             <label for="market">Land: </label>
             @{
-                if (ViewBag.Market != null) {
+                if (ViewBag.Market != null)
+                {
                     <input type="text" name="market" placeholder="US" value="@ViewBag.Market" style="width: 4rem" />
-                } else {
+                }
+                else
+                {
                     <input type="text" name="market" placeholder="US" value="DE" style="width: 4rem" />
                 }
             }
@@ -40,50 +46,81 @@
 <hr />
 
 @{
-    try {
-        if (@ViewBag.Query != null) {
+    try
+    {
+        if (@ViewBag.Query != null)
+        {
 
             <b>Suchergebnisse für "@ViewBag.Query"</b>
 
             <!-- Songs area -->
             <div class="mt-4">
-                <h3>Songs</h3>
-                <div class="row">
-                    @{
-                        if (ViewBag.Songs.Count > 0) {
-                            foreach (var item in ViewBag.Songs) {
-                                <div class="col-2">
-                                    <a href="@item.Uri" target="_blank">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                    </a>
+                <h3>Songs (@ViewBag.Songs.Count Treffer)</h3>
+
+
+            <table style="width: 100%; margin-top: .8rem;">
+                <colgroup>
+                    <col style="width: 64px;" />
+                    <col style="width: calc(100% - 114px);" />
+                    <col style="width: 150px;" />
+                </colgroup>
+                <tr style="background: #000000c2; color:azure; border-radius: .5rem .5rem 0 0">
+                    <td></td>
+                    <td class="text-center">
+                        Titel
+                    </td>
+                    <td class="text-center">
+                        Demo
+                    </td>
+                </tr>
+                @{
+                    foreach (var item in ViewBag.Songs) {
+                        <tr>
+                            <td>
+                                <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
+                            </td>
+                            <td>
+                                <div class="ml-2" style="padding-left: 1rem">
                                     <h4>@item.Name</h4>
                                     <p>@item.Artist</p>
                                 </div>
-                            }
-                        } else {
-                            <b>Keine Songs gefunden</b>
-                        }
+                            </td>
+                            <td>
+                                <div class="ml-2" style="padding-left: 1rem">
+                                    <audio controls>
+                                        <source src="@item.PreviewUrl">
+                                        Audio not supported
+                                    </audio>
+                                </div>
+                            </td>
+                        </tr>
                     }
+                }
+            </table>
                 </div>
-            </div>
 
 
             <!-- Playlist area -->
             <div class="mt-4">
-                <h3>Playlists</h3>
+                <h3>Playlists (@ViewBag.Playlists.Count Treffer)</h3>
                 <div class="row">
                     @{
-                        if (ViewBag.Playlists.Count > 0) {
-                            foreach (var item in ViewBag.Playlists) {
-                                <div class="col-2">
-                                    <a href="@item.Uri" target="_blank">
+                        if (ViewBag.Playlists.Count > 0)
+                        {
+                            foreach (var item in ViewBag.Playlists)
+                            {
+                                <div class="col-2 bg-white oauth-button">
+                                    @{ string url = item.Uri.Replace("spotify:playlist:", ""); }
+                                    <a href="/playlist?playlistId=@url">
                                         <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
+                                        <h4>@item.Name</h4>
+                                        <p>@item.Description</p>
                                     </a>
-                                    <h4>@item.Name</h4>
-                                    <p>@item.Description</p>
                                 </div>
                             }
-                        } else {
+                        }
+                        else
+                        {
                             <b>Keine Playlists gefunden</b>
                         }
                     }

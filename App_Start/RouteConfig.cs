@@ -36,6 +36,13 @@ namespace SpotifyAnarchyWebEdition {
                 defaults: new { controller = "Spotify", action = "AlbumView" }
             );
 
+            // View playlist route
+            routes.MapRoute(
+                name: "ViewPlaylist",
+                url: "playlist",
+                defaults: new { controller = "Spotify", action = "PlaylistView" }
+            );
+
             // Logout
             routes.MapRoute(
                 name: "Logout",
