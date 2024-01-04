@@ -1,0 +1,35 @@
+﻿.blocked {
+    overflow: hidden;
+}
+
+.curtain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Outfit, sans-serif;
+    opacity: 1;
+
+    transition-duration: .2s;
+}
+
+.window {
+    position: relative;
+    width: 50%;
+    height: 25%;
+    margin-bottom: 25%;
+    background-color: rgba(255,255,255,.75);
+    backdrop-filter: blur(1rem) contrast(2);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.25);
+    transition-duration: .2s;
+
+    transform: scale(1);
+}

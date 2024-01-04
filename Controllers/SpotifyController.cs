@@ -109,7 +109,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     var json = JObject.Parse(responseString);
 
                     // If type is playlist, add the playlists to the list
-                    if (Request.QueryString["type"] == "playlist") {
+                    if (Request.QueryString["type"].Contains("playlist")) {
                         var playlists = json["playlists"]["items"].Children().ToList();
                         foreach (var playlist in playlists) {
                             var images = playlist["images"].Children();
@@ -118,10 +118,11 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                                 playlistImageUrl, playlist["description"].ToString(), playlist["uri"].ToString()));
                         }
                     }
+                    ViewBag.Playlists = Playlists;
 
 
                     // If type is single, add the songs to the list
-                    if (Request.QueryString["type"] == "track") {
+                    if (Request.QueryString["type"].Contains("track")) {
                         var tracks = json["tracks"]["items"].Children().ToList();
                         foreach (var track in tracks) {
                             var artists = track["artists"].Children();
@@ -133,10 +134,11 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                                 track["preview_url"].ToString()));
                         }
                     }
+                    ViewBag.Songs = Songs;
 
 
                     // If type is album, add the albums to the list
-                    if (Request.QueryString["type"] == "album") {
+                    if (Request.QueryString["type"].Contains("album")) {
                         var albums = json["albums"]["items"].Children().ToList();
                         foreach (var album in albums) {
                             var artists = album["artists"].Children();
@@ -147,42 +149,34 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                                 albumImageUrl, album["uri"].ToString(), album["release_date"].ToString()));
                         }
                     }
+                    ViewBag.Albums = Albums;
 
 
                     // If type is artist, add the Artists to the list
-                    if (Request.QueryString["type"] == "artist") {
+                    if (Request.QueryString["type"].Contains("artist")) {
                         var artists = json["artists"]["items"].Children().ToList();
                         foreach (var artist in artists) {
-                            // Get the last image from the images array
                             var artistImages = artist["images"].Children();
-                            string artistImageUrl = artistImages.Last()["url"].ToString();
-
-                            string artistId = artist["id"].ToString();
-                            string artistName = artist["name"].ToString();
-
-                            int artistFollowers = Convert.ToInt32(artist["followers"]["total"]);
-
-                            Artists.Add(new Artist(artistId, artistName, artistImageUrl, artistFollowers));
+                            var artistImageUrl = artistImages.Last()["url"].ToString();
+                            var totalFollowers = Convert.ToInt32(artist["followers"]["total"]);
+                            Artists.Add(new Artist(artist["id"].ToString(), artist["name"].ToString(), artistImageUrl, totalFollowers));
                         }
                     }
-                    ViewBag.Songs = Songs;
                     ViewBag.Artists = Artists;
-                    ViewBag.Albums = Albums;
-                    ViewBag.Playlists = Playlists;
 
                 } catch (Exception ex) {
                     ViewBag.Content = "null";
-                    ViewBag.Error = ex.Message;
+                    ViewBag.Error = ex.Message + ": " + ex.Data;
                 }
             }
             return View();
         }
 
-        /// <summary>
-        /// Get the user profile which belongs to the Spotify Account
-        /// <br>and save it into the Session</br>
-        /// </summary>
-        private void GetUserProfile() {
+            /// <summary>
+            /// Get the user profile which belongs to the Spotify Account
+            /// <br>and save it into the Session</br>
+            /// </summary>
+            private void GetUserProfile() {
             try {
                 // Initialize SpotifyUserProfileAPIResponse
                 SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();

@@ -191,7 +191,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
-    <Content Include="Content\ControlElements.css" />
+    <Content Include="Content\CSS\ControlElements.css" />
+    <Content Include="Content\CSS\SearchWindow.css" />
     <Content Include="Content\Images\Listen_on_spotify.png" />
     <Content Include="Content\Images\user_placeholder.png" />
     <Content Include="Content\svg\light\ic_email.svg" />
@@ -203,7 +204,7 @@
     <Content Include="Content\Images\Spotify_OAuth_button.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\CSS\Site.css" />
     <Content Include="libman.json" />
     <Content Include="Content\Font\Outfit.ttf" />
     <Content Include="Scripts\bootstrap.bundle.js" />

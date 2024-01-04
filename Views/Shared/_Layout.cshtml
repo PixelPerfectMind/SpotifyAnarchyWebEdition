@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Spotify Anarchy Web Edition</title>
     @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/TailwindCSS")
     @Scripts.Render("~/bundles/modernizr")
-    <link rel="stylesheet" href="~/Content/ControlElements.css" />
+    <link rel="stylesheet" href="~/Content/CSS/ControlElements.css" />
+    <link rel="stylesheet" href="~/Content/CSS/Site.css" />
+    <link rel="stylesheet" href="~/Content/CSS/SearchWindow.css" />
 </head>
-<body>
+<body id="body">
     <nav class="navbar" id="navbar">
         <div style="display: flex;">
             <a href="~/" class="navbar-brand">
                 <img src="~/Content/Images/spotify-anarchy.logo.png" alt="su" style="height: 36px;" />
             </a>
-            <a href="~/search" class="nav-link navBarLinkButton">
+            <!--  href="~/search" -->
+            <a class="nav-link navBarLinkButton" onclick="OpenCloseCurtain('open')">
                 <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" />
                 <b>Suche</b>
             </a>
@@ -35,11 +37,40 @@
         </footer>
     </div>
 
+    <div class="curtain" id="curtain" style="display: none;">
+        <div class="window" style="align-content: space-between;">
+            <!-- Title bar -->
+            <div style="display: flex; justify-content: space-between">
+                <!-- Close button -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" onclick="OpenCloseCurtain('close')">
+                    <circle cx="6" cy="6" r="5.75" fill="#E9685D" stroke="#D05245" stroke-width="0.5" />
+                </svg>
+
+                <b style="align-content: center;">Spotify durchsuchen</b>
+                <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" style="filter: invert()" height="18" />
+            </div>
+
+
+                <div style="display: flex; align-content: space-between;">
+                    <input type="text" id="searchQuery" name="query" placeholder="Suchbegriff eingeben" />
+                </div>
+
+                <!-- Action buttons -->
+                <div>
+                    <a href="~/search">Erweiterte Suchseite öffnen</a>
+                    <button onclick="OpenCloseCurtain('close')">Abbruch</button>
+                    <button class="blueButton" onclick="RedirectToSearchView()">Suche</button>
+                </div>
+        </div>
+    </div>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+
 <script>
     // On sroll down, add 'navbar-scrolled' class to navbar
     window.onscroll = function () { scrollFunction() };
@@ -50,5 +81,26 @@
         } else {
             document.getElementById("navbar").classList.remove("navbar-scrolled");
         }
+    }
+
+    function OpenCloseCurtain(action) {
+        if (action == "open") {
+            document.getElementById("curtain").style.display = "flex";
+            document.getElementById("body").classList.add("blocked");
+        }
+        else if (action == "close") {
+            document.getElementById("curtain").style.display = "none";
+            document.getElementById("body").classList.remove("blocked");
+        }
+    }
+
+    function RedirectToSearchView() {
+        var query = document.getElementById('searchQuery').value;
+        query = query.replace(/ /g, "+");
+
+        let types = ["track", "album", "artist", "playlist", "show", "episode", "audiobook"].toString();
+        types = types.replace(/,/g, "%2C");
+
+        window.location.href = "/search?query=" + query + "&type=" + types + "&market=DE";
     }
 </script>

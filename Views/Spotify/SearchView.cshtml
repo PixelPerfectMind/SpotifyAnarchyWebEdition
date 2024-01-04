@@ -100,29 +100,6 @@
                 </table>
             </div>
 
-
-            <!-- Artists area -->
-            <div class="mt-4">
-                <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
-                <div class="row">
-                    @{
-                        if (ViewBag.Artists.Count > 0) {
-                            foreach (var item in ViewBag.Artists) {
-                                <div class="col-2 bg-white oauth-button">
-                                    <a href="/artist?artistId=@item.Id">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                        <h4>@item.Name</h4>
-                                        <p>@item.TotalFollowers</p>
-                                    </a>
-                                </div>
-                            }
-                        } else {
-                            <b>Keine Künstler gefunden</b>
-                        }
-                    }
-                </div>
-            </div>
-
             <!-- Albums area -->
             <div class="mt-4">
                 <h3>Alben (@ViewBag.Albums.Count Treffer)</h3>
@@ -172,6 +149,33 @@
                         else
                         {
                             <b>Keine Playlists gefunden</b>
+                        }
+                    }
+                </div>
+            </div>
+
+
+            <!-- Artists area -->
+            <div class="mt-4">
+                <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
+                <div class="row">
+                    @{
+                        if (ViewBag.Artists.Count > 0)
+                        {
+                            foreach (var item in ViewBag.Artists)
+                            {
+                                <div class="col-2 bg-white oauth-button">
+                                    <a href="/artist?artistId=@item.Id">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
+                                        <h4>@item.Name</h4>
+                                        <p>@item.TotalFollowers</p>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <b>Keine Künstler gefunden</b>
                         }
                     }
                 </div>
