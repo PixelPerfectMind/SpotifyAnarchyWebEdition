@@ -27,20 +27,21 @@
 
 <main>
     @{
-        try
-        {
+        try {
 
             <div class="hero-image mb-4">
                 <div class="hero-blur">
-                        <div class="hero-text">
-                            <div class="mb-2">
-                                <img src="@ViewBag.User.ImageUrl" class="h-64 w-64 rounded-circle" />
-                            </div>
-                            <h1>@ViewBag.User.DisplayName</h1>
-                            <p><b>Spotify-ID: </b>@ViewBag.User.SpotifyId</p>
-                            <p><b>Landeskennung: </b>@ViewBag.User.Country</p>
-                            <a href="@ViewBag.User.SpotifyProfileUrl">Zum Spotify-Profil</a>
+                    <div class="hero-text">
+                        <div class="mb-2">
+                            <img src="@ViewBag.User.ImageUrl" class="h-64 w-64 rounded-circle" />
                         </div>
+                        <h1>@ViewBag.User.DisplayName</h1>
+                        <p><b>Spotify-ID: </b>@ViewBag.User.SpotifyId</p>
+                        <p><b>Landeskennung: </b>@ViewBag.User.Country</p>
+                        <a href="@ViewBag.User.SpotifyProfileUrl">
+                            <button>Profil auf Spotify ansehen</button>
+                        </a>
+                    </div>
                 </div>
             </div>
     
@@ -50,12 +51,14 @@
                     @{
                         if (ViewBag.Playlists.Count > 0) {
                             foreach (var item in ViewBag.Playlists) {
-                                <div class="col-2 bg-white oauth-button">
+                                <div class="col-2 bg-white">
                                     @{ string url = item.Uri.Replace("spotify:playlist:", ""); }
                                     <a href="/playlist?playlistId=@url">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                        <h4>@item.Name</h4>
-                                        <p>@item.Description</p>
+                                        <button style="width: 13rem;">
+                                            <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" style="width: 12rem; height: 12rem;" />
+                                            <h4>@item.Name</h4>
+                                            <p>@item.Description</p>
+                                        </button>
                                     </a>
                                 </div>
                             }

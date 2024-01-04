@@ -4,33 +4,44 @@
 
 <main>
     <div style="margin-top: 4rem;" class="mb-4">
-        <h1>Herzlich Willkommen zu</h1>
-        <h1>
-            <img style="margin-bottom: 8px;" src="~/Content/Images/spotify-anarchy.logo.png" alt="su" />
-            スポティファイ・アナーキー WEB Edition
-        </h1>
-        <div style="font-size: 10px; margin-left: 60px; margin-top: -24px;">
-            <span>supotifai anaakii (Spotify Anarchy)</span>
-        </div>
+        @{
+            if (ViewBag.UserName == null)
+            {
+                <h1>Herzlich Willkommen zu</h1>
+                <h1>
+                    <img style="margin-bottom: 8px;" src="~/Content/Images/spotify-anarchy.logo.png" alt="su" />
+                    スポティファイ・アナーキー WEB Edition
+                </h1>
+                <div style="font-size: 10px; margin-left: 60px; margin-top: -24px;">
+                    <span>supotifai anaakii (Spotify Anarchy)</span>
+                </div>
+
+                <b>Bitte melde dich an, um diese Web-App nutzen zu können.</b>
+                <span>Ansonsten können nur die neusten Alben aufgelistet werden.</span><br />
+
+                <!-- OAuth button -->
+                <a class="oauth-button" href="https://accounts.spotify.com/authorize?client_id=3eac98750c8f4f4da6dbf4dc63d182b6&response_type=code&redirect_uri=https://localhost:44394/oauth&state=static&scope=user-read-private user-read-email playlist-read-collaborative playlist-read-private">
+                    <img src="~/Content/Images/Spotify_OAuth_button.png" height="32" alt="Mit Spotify anmelden" />
+                </a>
+            }
+            else
+            {
+                <div style="text-align: right;">
+
+                    <h5>
+                        @ViewBag.UserName
+                        <img src="@ViewBag.UserImagePath" alt="Profilbild von @ViewBag.UserName" style=" height: 32px; border-radius: 16px; margin: 0 4px 4px 0;" />
+                    </h5>
+                    <a href="/profile">
+                        <button>Mein Profil</button>
+                    </a>
+                    <a href="/logout">
+                        <button>Abmelden</button>
+                    </a>
+                </div>
+            }
+        }
     </div>
-    @{
-        if (ViewBag.UserName == null)
-        {
-            <b>Bitte melde dich an, um diese Web-App nutzen zu können.</b>
-            <span>Ansonsten können nur die neusten Alben aufgelistet werden.</span><br />
-            <a class="oauth-button" href="https://accounts.spotify.com/authorize?client_id=3eac98750c8f4f4da6dbf4dc63d182b6&response_type=code&redirect_uri=https://localhost:44394/oauth&state=static&scope=user-read-private user-read-email playlist-read-collaborative playlist-read-private">
-                <img src="~/Content/Images/Spotify_OAuth_button.png" height="32" alt="Mit Spotify anmelden" />
-            </a>
-        }
-        else
-        {
-            <h4>
-                <img src="@ViewBag.UserImagePath" alt="Profilbild von @ViewBag.UserName" style=" height: 32px; border-radius: 16px; margin: 0 4px 4px 0;" />
-                Hallo @ViewBag.UserName!
-            </h4>
-            <a href="/profile">Zur Profilseite</a> <span>●</span> <a href="/logout">Abmelden</a>
-        }
-    }
     <div>
     </div>
 
@@ -42,14 +53,16 @@
                 <div class="row">
                     @foreach (var item in ViewBag.NewAlbums)
                     {
-                        <div class="col-2 bg-white oauth-button">
-                            <a href="/album?albumId=@item.Uri">
-                                <img src="@item.ImageUrl" class="img-fluid" />
-                                <p class="mt-2">
+                        <a class="col-2" href="/album?albumId=@item.Uri">
+                            <button>
+                                <div class="pt-1">
+                                    <img src="@item.ImageUrl" class="img-fluid rounded" />
+                                </div>
+                                <div class="mt-2">
                                     <b>@item.Name</b>
-                                </p>
-                            </a>
-                        </div>
+                                </div>
+                            </button>
+                        </a>
                     }
                 </div>
             }

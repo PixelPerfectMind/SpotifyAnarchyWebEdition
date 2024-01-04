@@ -1,53 +1,92 @@
 ﻿<main>
-@{
-    if (@ViewBag.Error == null) {
-        try {
+    @{
+        if (@ViewBag.Error == null) {
 
-            // If authentication was successful, display the following:
-            ViewBag.Title = "Authentifizierung erfolgreich";
+            try {
 
-            if (ViewBag.User != null) {
-                <div>
-                    <img src="@ViewBag.User.ImageUrl" class="h-10 w-10 object-cover rounded-full" />
-                    <p class="text-xl font-bold">Guten Tag, @ViewBag.User.DisplayName!</p>
-                    <p>@ViewBag.User.Email</p>
+                // If authentication was successful, display the following:
+                ViewBag.Title = "Authentifizierung erfolgreich";
+
+                <div class="h-10 w-10 d-flex m-auto" style="margin-top: 4.5rem;">
+                    <img src="@ViewBag.User.ImageUrl" class="h-10 w-10 object-cover" style="border-radius: 100%; display: flex; margin: auto;">
                 </div>
+
+                <div style="text-align: center; margin-top: 16px;">
+                    <span style="font-size: 2rem; color: #0F0F0F; font-weight: 700;">
+                        Hallo, @ViewBag.User.DisplayName!
+                    </span>
+                </div>
+
+                <div style="text-align: center; margin-top: 8px;">
+                    <img src="~/Content/svg/light/ic_email.svg" class="object-cover" style="width: 1.375rem; height: 1.375rem;" />
+                    <span class="text-center"
+                          style="font-size: 0.9375rem; color: #4A4A4A; font-weight: 400; margin-left: 0.5rem">
+                        @ViewBag.User.Email
+                    </span>
+                </div>
+
+                <!-- Action button area -->
+                <div style="text-align: center; margin-top: 16px;">
+                    <a href="/">
+                        <button>Startseite</button>
+                    </a>
+                    <a href="/profile">
+                        <button>Profilseite</button>
+                    </a>
+                    <a href="/search">
+                        <button>Spotify-Suche</button>
+                    </a>
+                </div>
+
+                <!-- Access Token field -->
+                <div style="text-align: center; margin-top: 32px;">
+                    <div style="margin-bottom: 8px;">
+                        <img src="~/Content/svg/light/ic_key.svg" class="object-cover" style="width: 1.375rem; height: 1.375rem;" />
+                        <span class="text-center"
+                              style="font-size: 1rem; color: #4A4A4A; font-weight: 700; margin-left: 0.5rem">
+                            Dein Access-Token
+                        </span>
+                    </div>
+                    <div style="border-radius: 0.375rem; border-top: 1px solid #F0F0F0; border-right: 1px solid #F0F0F0; border-left: 1px solid #F0F0F0; background: #D2E7D4; padding: .5rem; margin-bottom: 8px;">
+                        <code>
+                            @ViewBag.AccessToken
+                        </code>
+                    </div>
+                    <p>Dein Access Token läuft in @ViewBag.ExpiresIn Minuten ab!</p>
+                </div>
+
+                <!-- Refresh Token field -->
+                <div style="text-align: center; margin-top: 32px;">
+                    <div style="margin-bottom: 8px;">
+                        <img src="~/Content/svg/light/ic_refresh.svg" class="object-cover" style="width: 1.375rem; height: 1.375rem;" />
+                        <span class="text-center"
+                              style="font-size: 1rem; color: #4A4A4A; font-weight: 700; margin-left: 0.5rem">
+                            Dein Refresh Token
+                        </span>
+                    </div>
+                    <div style="border-radius: 0.375rem; border-top: 1px solid #F0F0F0; border-right: 1px solid #F0F0F0; border-left: 1px solid #F0F0F0; background: #D2E7D4; padding: .5rem;">
+                        <code>
+                            @ViewBag.RefreshToken
+                        </code>
+                    </div>
+                </div>
+
+            } catch (Exception ex) {
+                ViewBag.FrontendError = ex.Message;
             }
+        } else {
+            // Otherwise, display the following:
+            ViewBag.Title = "Authentifizierung fehlgeschlagen";
 
-            <h2>@ViewBag.Title</h2>
-            <div>
-                <p>Dein Access Token lautet: @ViewBag.AccessToken</p>
-                <p>Dein Refresh Token lautet: @ViewBag.RefreshToken</p>
-                <p>Dein Access Token läuft in @ViewBag.ExpiresIn Minuten ab!</p>
+            <div class="rounded shadow text-white py-2 px-3" style="background: red;">
+                <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+                <div class="mt-2" style="background: red;">
+                    <b>Frontend: </b>@ViewBag.FrontendError<br />
+                </div>
+                <div class="mt-2" style="background: red;">
+                    <b>Backend: </b>@ViewBag.Error<br />
+                </div>
             </div>
-
-            <h4>Da du jetzt angemeldet bist, was möchtest du machen?</h4>
-            <div>
-                <a href="/profile">Meine Profildetails anzeigen</a>
-            </div>
-            <div>
-                <a href="/spotify/me">Meine Playlists anzeigen</a>
-            </div>
-            <div>
-                <a href="/search">Inhalte durchsuchen</a>
-            </div>
-        } catch (Exception ex) {
-            ViewBag.FrontendError = ex.Message;
-            throw ex;
-        }
-    } else {
-        // Otherwise, display the following:
-        ViewBag.Title = "Authentifizierung fehlgeschlagen";
-        
-        <div class="rounded shadow text-white py-2 px-3" style="background: red;">
-            <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
-            <div class="mt-2" style="background: red;">
-                <b>Frontend: </b>@ViewBag.FrontendError<br />
-            </div>
-            <div class="mt-2" style="background: red;">
-                <b>Backend: </b>@ViewBag.Error<br />
-            </div>
-        </div>
         }
     }
 
