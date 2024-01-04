@@ -163,6 +163,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SpotifyController.cs" />
+    <Compile Include="Controllers\Spotify\ArtistController.cs" />
+    <Compile Include="Controllers\WebApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -263,6 +265,7 @@
     <Content Include="Views\Spotify\UserProfileView.cshtml" />
     <Content Include="Views\Spotify\AlbumView.cshtml" />
     <Content Include="Views\Spotify\PlaylistView.cshtml" />
+    <Content Include="Views\Artist\ArtistView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

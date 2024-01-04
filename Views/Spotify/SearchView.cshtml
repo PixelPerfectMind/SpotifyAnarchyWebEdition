@@ -17,7 +17,7 @@
                 <input type="text" name="query" placeholder="Last Christmas" />
             }
         }
-        <input type="submit" value="Filter" />
+        <button class="blueButton" type="submit">Suche</button>
         <div class="mt-2">
             <select name="type">
                 <option value="track">Single</option>
@@ -48,6 +48,7 @@
 @{
     try
     {
+
         if (@ViewBag.Query != null)
         {
 
@@ -57,48 +58,97 @@
             <div class="mt-4">
                 <h3>Songs (@ViewBag.Songs.Count Treffer)</h3>
 
-
-            <table style="width: 100%; margin-top: .8rem;">
-                <colgroup>
-                    <col style="width: 64px;" />
-                    <col style="width: calc(100% - 114px);" />
-                    <col style="width: 150px;" />
-                </colgroup>
-                <tr style="background: #000000c2; color:azure; border-radius: .5rem .5rem 0 0">
-                    <td></td>
-                    <td class="text-center">
-                        Titel
-                    </td>
-                    <td class="text-center">
-                        Demo
-                    </td>
-                </tr>
-                @{
-                    foreach (var item in ViewBag.Songs) {
-                        <tr>
-                            <td>
-                                <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
-                            </td>
-                            <td>
-                                <div class="ml-2" style="padding-left: 1rem">
-                                    <h4>@item.Name</h4>
-                                    <p>@item.Artist</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="ml-2" style="padding-left: 1rem">
-                                    <audio controls>
-                                        <source src="@item.PreviewUrl">
-                                        Audio not supported
-                                    </audio>
-                                </div>
-                            </td>
-                        </tr>
+                <table style="width: 100%; margin-top: .8rem;">
+                    <colgroup>
+                        <col style="width: 64px;" />
+                        <col style="width: calc(100% - 114px);" />
+                        <col style="width: 150px;" />
+                    </colgroup>
+                    <tr style="background: #000000c2; color:azure; border-radius: .5rem .5rem 0 0">
+                        <td></td>
+                        <td class="text-center">
+                            Titel
+                        </td>
+                        <td class="text-center">
+                            Demo
+                        </td>
+                    </tr>
+                    @{
+                        foreach (var item in ViewBag.Songs)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
+                                </td>
+                                <td>
+                                    <div class="ml-2" style="padding-left: 1rem">
+                                        <h4>@item.Name</h4>
+                                        <p>@item.Artist</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ml-2" style="padding-left: 1rem">
+                                        <audio controls>
+                                            <source src="@item.PreviewUrl">
+                                            Audio not supported
+                                        </audio>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
-                }
-            </table>
-                </div>
+                </table>
+            </div>
 
+
+            <!-- Artists area -->
+            <div class="mt-4">
+                <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
+                <div class="row">
+                    @{
+                        if (ViewBag.Artists.Count > 0) {
+                            foreach (var item in ViewBag.Artists) {
+                                <div class="col-2 bg-white oauth-button">
+                                    <a href="/artist?artistId=@item.Id">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
+                                        <h4>@item.Name</h4>
+                                        <p>@item.TotalFollowers</p>
+                                    </a>
+                                </div>
+                            }
+                        } else {
+                            <b>Keine Künstler gefunden</b>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Albums area -->
+            <div class="mt-4">
+                <h3>Alben (@ViewBag.Albums.Count Treffer)</h3>
+                <div class="row">
+                    @{
+                        if (ViewBag.Albums.Count > 0)
+                        {
+                            foreach (var item in ViewBag.Albums)
+                            {
+                                <div class="col-2 bg-white oauth-button">
+                                    @{ string url = item.Uri.Replace("spotify:album:", ""); }
+                                    <a href="/album?albumId=@url">
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
+                                        <h4>@item.Name</h4>
+                                        <p>@item.Artist</p>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <b>Keine Alben gefunden</b>
+                        }
+                    }
+                </div>
+            </div>
 
             <!-- Playlist area -->
             <div class="mt-4">

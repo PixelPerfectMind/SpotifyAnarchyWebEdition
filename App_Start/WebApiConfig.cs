@@ -14,6 +14,13 @@ namespace SpotifyAnarchyWebEdition
             // Web-API-Routen
             config.MapHttpAttributeRoutes();
 
+            // Login route
+            config.Routes.MapHttpRoute(
+                name: "SpotifyLogin",
+                routeTemplate: "api/v1/login",
+                defaults: new { controller = "WebApi", action = "Login" }
+            );
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

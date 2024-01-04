@@ -77,9 +77,28 @@ button {
     }
 
     button:active {
-        margin: 0;
         border: 6px solid #C4C4C4;
         background: #808080;
+    }
+
+.blueButton {
+    border: 3px solid #AFC9F1;
+    background: #5D8BC3;
+    border-radius: 6px;
+    transition-duration: .2s;
+    text-decoration: none;
+    color: white;
+    margin: 3px;
+}
+
+    .blueButton:hover {
+        background: #446690;
+    }
+
+    .blueButton:active {
+        margin: 0px;
+        border: 6px solid #AFC9F1;
+        background: #385476;
     }
 
 
@@ -91,6 +110,26 @@ code {
     font-weight: 500;
     line-height: normal;
 }
+
+
+.bigBaseButton {
+    padding: 1rem;
+    min-width: 9rem;
+    max-width: 9rem;
+    min-height: 9rem;
+    max-height: 9rem;
+    overflow: hidden;
+    transition-duration: .2s;
+}
+
+    .bigBaseButton:hover {
+        border-radius: 1rem;
+    }
+
+    .bigBaseButton:active {
+        border-radius: 2rem;
+    }
+
 
 
 a {

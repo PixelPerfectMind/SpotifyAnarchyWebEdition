@@ -67,8 +67,12 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         /// Opens the search page and/or performs a search
         /// </summary>
         public ActionResult SearchView(string query, string type, string market) {
+
+            // Initialize the lists
             ObservableCollection<Song> Songs = new ObservableCollection<Song>();
             ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
+            ObservableCollection<Album> Albums = new ObservableCollection<Album>();
+            ObservableCollection<Artist> Artists = new ObservableCollection<Artist>();
 
             ViewBag.Query = Request.QueryString["query"];
             ViewBag.Market = Request.QueryString["market"];
@@ -104,7 +108,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     // Parse the response
                     var json = JObject.Parse(responseString);
 
-                    // If type is album, add the albums to the list
+                    // If type is playlist, add the playlists to the list
                     if (Request.QueryString["type"] == "playlist") {
                         var playlists = json["playlists"]["items"].Children().ToList();
                         foreach (var playlist in playlists) {
@@ -129,8 +133,42 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                                 track["preview_url"].ToString()));
                         }
                     }
-                    ViewBag.Playlists = Playlists;
+
+
+                    // If type is album, add the albums to the list
+                    if (Request.QueryString["type"] == "album") {
+                        var albums = json["albums"]["items"].Children().ToList();
+                        foreach (var album in albums) {
+                            var artists = album["artists"].Children();
+                            var albumArtist = artists.First()["name"].ToString();
+                            var albumImages = album["images"].Children();
+                            var albumImageUrl = albumImages.Last()["url"].ToString();
+                            Albums.Add(new Album(album["id"].ToString(), album["name"].ToString(), albumArtist,
+                                albumImageUrl, album["uri"].ToString(), album["release_date"].ToString()));
+                        }
+                    }
+
+
+                    // If type is artist, add the Artists to the list
+                    if (Request.QueryString["type"] == "artist") {
+                        var artists = json["artists"]["items"].Children().ToList();
+                        foreach (var artist in artists) {
+                            // Get the last image from the images array
+                            var artistImages = artist["images"].Children();
+                            string artistImageUrl = artistImages.Last()["url"].ToString();
+
+                            string artistId = artist["id"].ToString();
+                            string artistName = artist["name"].ToString();
+
+                            int artistFollowers = Convert.ToInt32(artist["followers"]["total"]);
+
+                            Artists.Add(new Artist(artistId, artistName, artistImageUrl, artistFollowers));
+                        }
+                    }
                     ViewBag.Songs = Songs;
+                    ViewBag.Artists = Artists;
+                    ViewBag.Albums = Albums;
+                    ViewBag.Playlists = Playlists;
 
                 } catch (Exception ex) {
                     ViewBag.Content = "null";

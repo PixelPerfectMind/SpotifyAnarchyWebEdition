@@ -1,0 +1,153 @@
+﻿<main>
+    @{
+        try
+        {
+
+            // If authentication was successful, display the following:
+            ViewBag.Title = "Künstler-Details";
+
+            <div class="flex m-auto" style="margin-top: 4.5rem;">
+                <img src="@ViewBag.Artist.ImageUrl" class="object-fit-cover" style="border-radius: 100%; display: flex; margin: auto; width: 12rem; height: 12rem;">
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+                <span style="font-size: 2rem; color: #0F0F0F; font-weight: 700;">
+                    @ViewBag.Artist.Name
+                </span>
+            </div>
+
+            <div style="text-align: center;">
+                <span class="text-center"
+                      style="font-size: 0.9375rem; color: #4A4A4A; font-weight: 400; margin-left: 0.5rem">
+                    @ViewBag.Artist.TotalFollowers Follower
+                </span>
+            </div>
+
+            <div style="text-align: center; margin-top: 8px;">
+                <a href="https://open.spotify.com/artist/@ViewBag.Artist.Id">
+                    <button class="blueButton">Auf Spotify ansehen</button>
+                </a>
+            </div>
+
+            <!-- Genres field -->
+            <div style="text-align: center; margin-top: 16px;">
+                <div>
+                    <span class="text-center"
+                          style="font-size: 1rem; color: #4A4A4A; font-weight: 700;">
+                        Genres
+                    </span>
+                </div>
+                @{
+                    foreach (var genre in ViewBag.Artist.Genres)
+                    {
+                        <span>@genre</span><br />
+                    }
+                }
+            </div>
+
+            <!-- Top tracks -->
+            <div style="margin-top: 32px">
+                <h3>
+                    Top-Tracks von @ViewBag.Artist.Name:
+                </h3>
+            </div>
+            <table style="width: 100%; margin-top: 8px;">
+                <colgroup>
+                    <col style="width: 64px;" />
+                    <col style="width: calc(100% - 114px);" />
+                    <col style="width: 150px;" />
+                </colgroup>
+                <tr style="background: #000000c2; color:azure; border-radius: .5rem .5rem 0 0">
+                    <td></td>
+                    <td class="text-center">
+                        Titel
+                    </td>
+                    <td class="text-center">
+                        Demo
+                    </td>
+                </tr>
+                @{
+                    if (ViewBag.TopSongs.Count > 0)
+                    {
+                        foreach (var item in ViewBag.TopSongs)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
+                                </td>
+                                <td>
+                                    <div class="ml-2" style="padding-left: 1rem">
+                                        <h4>@item.Name</h4>
+                                        <p>@item.Album</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ml-2" style="padding-left: 1rem">
+                                        <audio controls>
+                                            <source src="@item.PreviewUrl">
+                                            Audio not supported
+                                        </audio>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">
+                                <div style="margin-top: 8px">
+                                    <b style="color:red">Keine Top-Songs gefunden</b>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+
+            <!-- Related artists -->
+            <div style="margin-top: 32px">
+                <h3>
+                    Ähnllich wie @ViewBag.Artist.Name:
+                </h3>
+            </div>
+            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
+                @{ 
+                    foreach (var item in ViewBag.RelatedArtists) {
+                        <a href="/artist?artistId=@item.Id">
+                            <button class="bigBaseButton" >
+                                <div>
+                                    <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: 32px;" />
+                                </div>
+                                <div>
+                                    <b>@item.Name</b>
+                                </div>
+                            </button>
+                        </a>
+                    }
+                }
+            </div>
+
+
+        }
+        catch (Exception ex)
+        {
+
+            ViewBag.FrontendError = ex.Message;
+
+            if (@ViewBag.Error != null || ViewBag.FrontendError != null)
+            {
+
+                <div class="rounded shadow text-white p-2" style="background: red;">
+                    <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+                    <div class="mt-2" style="background: red;">
+                        <b>Frontend: </b>@ViewBag.FrontendError <br />
+                    </div>
+                    <div class="mt-2" style="background: red;">
+                        <b>Backend: </b>@ViewBag.Error <br />
+                    </div>
+                </div>
+            }
+        }
+    }
+</main>

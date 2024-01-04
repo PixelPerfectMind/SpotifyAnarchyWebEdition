@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SpotifyAnarchyWebEdition.Models {
 
@@ -13,8 +14,7 @@ namespace SpotifyAnarchyWebEdition.Models {
         }
 
         public Playlist(string spotifyId, string spotifyUrl, int totalFollowers, string name, string imageUrl, string description, string uri,
-            string userId, string userName)
-        {
+            string userId, string userName) {
             this.SpotifyId = spotifyId;
             this.SpotifyUrl = spotifyUrl;
             this.TotalFollowers = totalFollowers;
@@ -111,5 +111,29 @@ namespace SpotifyAnarchyWebEdition.Models {
         public string ReleaseDate { get; set; }
         public int TotalTracks { get; private set; }
         public ObservableCollection<Song> Songs { get; set; }
+    }
+
+    public class Artist {
+
+        public Artist() {
+            Genres = new List<string>();
+        }
+
+        public Artist(string spotifyId, string name, string imageUrl, int totalFollowers) {
+            this.Name = name;
+            this.ImageUrl = imageUrl;
+            this.Id = spotifyId;
+            this.TotalFollowers = totalFollowers;
+            Genres = new List<string>();
+        }
+
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public string Id { get; set; }
+        public string Uri { get; set; }
+        public string Href { get; set; }
+        public int PopularityScore { get; set; }
+        public int TotalFollowers { get; set; }
+        public List<string> Genres { get; set; }
     }
 }
