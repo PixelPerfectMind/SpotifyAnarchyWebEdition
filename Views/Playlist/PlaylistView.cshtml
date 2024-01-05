@@ -35,9 +35,25 @@
                     </div>
                 </td>
                 <td>
-                    <div class="ml-2" style="padding-left: 1rem">
-                        <button href="/playlist/follow?playlistId=@ViewBag.Playlist.">Folgen</button>
-                    </div>
+                    @{
+                        if (ViewBag.UserFollowsPlaylist)
+                        {
+                                        <div class="ml-2" style="padding-left: 1rem">
+                                            <a href="/playlist/unfollow?playlistId=@ViewBag.Playlist.SpotifyId">
+                                                <button>Entfolgen</button>
+                                            </a>
+                                        </div>
+                        }
+                        else
+                        {
+
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <a href="/playlist/follow?playlistId=@ViewBag.Playlist.SpotifyId&scope=private">
+                                    <button class="blueButton">Folgen</button>
+                                </a>
+                            </div>
+                        }
+                    }
                 </td>
             </tr>
         </table>
@@ -58,7 +74,8 @@
                 </td>
             </tr>
             @{
-                foreach (var item in ViewBag.Playlist.Songs) {
+                foreach (var item in ViewBag.Playlist.Songs)
+                {
                     <tr>
                         <td>
                             <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
@@ -73,7 +90,7 @@
                             <div class="ml-2" style="padding-left: 1rem">
                                 <audio controls>
                                     <source src="@item.PreviewUrl">
-                                        Audio not supported
+                                    Audio not supported
                                 </audio>
                             </div>
                         </td>
@@ -83,16 +100,18 @@
         </table>
 
 
-                    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
 
-                    <div class="rounded shadow text-white p-2" style="background: red;">
-                        <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
-                        <div class="mt-2" style="background: red;">
-                            <b>Frontend: </b>@ex.Message <br />
-                        </div>
-                        <div class="mt-2" style="background: red;">
-                            <b>Backend: </b>@ViewBag.Error <br />
-                        </div>
-                    </div>
-                    }
-                    }
+        <div class="rounded shadow text-white p-2" style="background: red;">
+            <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+            <div class="mt-2" style="background: red;">
+                <b>Frontend: </b>@ex.Message <br />
+            </div>
+            <div class="mt-2" style="background: red;">
+                <b>Backend: </b>@ViewBag.Error <br />
+            </div>
+        </div>
+    }
+}

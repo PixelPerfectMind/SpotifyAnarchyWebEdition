@@ -112,10 +112,11 @@
                 </h3>
             </div>
             <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
-                @{ 
-                    foreach (var item in ViewBag.RelatedArtists) {
+                @{
+                    foreach (var item in ViewBag.RelatedArtists)
+                    {
                         <a href="/artist?artistId=@item.Id">
-                            <button class="bigBaseButton" >
+                            <button class="bigBaseButton">
                                 <div>
                                     <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: 32px;" />
                                 </div>
@@ -129,7 +130,9 @@
             </div>
 
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
 
             ViewBag.FrontendError = ex.Message;
 

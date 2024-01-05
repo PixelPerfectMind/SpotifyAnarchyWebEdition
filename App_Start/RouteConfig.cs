@@ -26,22 +26,38 @@ namespace SpotifyAnarchyWebEdition {
             routes.MapRoute(
                 name: "ViewUserProfile",
                 url: "profile",
-                defaults: new { controller = "Spotify", action = "UserProfileView" }
+                defaults: new { controller = "UserProfile", action = "UserProfileView" }
             );
 
             // View album route
             routes.MapRoute(
                 name: "ViewAlbum",
                 url: "album",
-                defaults: new { controller = "Spotify", action = "AlbumView" }
+                defaults: new { controller = "Album", action = "AlbumView" }
             );
+
 
             // View playlist route
             routes.MapRoute(
                 name: "ViewPlaylist",
                 url: "playlist",
-                defaults: new { controller = "Spotify", action = "PlaylistView" }
+                defaults: new { controller = "Playlist", action = "PlaylistView" }
             );
+
+            // Follow playlist route
+            routes.MapRoute(
+                name: "FollowPlaylist",
+                url: "playlist/follow",
+                defaults: new { controller = "Playlist", action = "FollowPlaylist" }
+            );
+
+            // Unfollow playlist route
+            routes.MapRoute(
+                name: "UnfollowPlaylist",
+                url: "playlist/unfollow",
+                defaults: new { controller = "Playlist", action = "UnfollowPlaylist" }
+            );
+
 
             // View artist route
             routes.MapRoute(

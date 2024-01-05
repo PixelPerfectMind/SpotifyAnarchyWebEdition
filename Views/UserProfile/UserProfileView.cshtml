@@ -27,7 +27,8 @@
 
 <main>
     @{
-        try {
+        try
+        {
 
             <div class="hero-image mb-4">
                 <div class="hero-blur">
@@ -44,33 +45,40 @@
                     </div>
                 </div>
             </div>
-    
-            <div class="mt-4">
+
+            <div style="margin-top: 32px;">
                 <h3>Deine Playlists</h3>
-                <div class="row">
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
-                        if (ViewBag.Playlists.Count > 0) {
-                            foreach (var item in ViewBag.Playlists) {
-                                <div class="col-2 bg-white">
-                                    @{ string url = item.Uri.Replace("spotify:playlist:", ""); }
-                                    <a href="/playlist?playlistId=@url">
-                                        <button style="width: 13rem;">
-                                            <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" style="width: 12rem; height: 12rem;" />
-                                            <h4>@item.Name</h4>
-                                            <p>@item.Description</p>
-                                        </button>
-                                    </a>
-                                </div>
+                        if (ViewBag.Playlists.Count > 0)
+                        {
+
+                            foreach (var item in ViewBag.Playlists)
+                            {
+                                string url = item.Uri.Replace("spotify:playlist:", "");
+                                <a href="/playlist?playlistId=@url">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                        </div>
+                                        <div>
+                                            <b>@item.Name</b>
+                                        </div>
+                                    </button>
+                                </a>
                             }
-                        } else {
+                        }
+                        else
+                        {
                             <b>Anscheinend hast du keine Playlist in deinem Spotify-Account hinterlegt</b>
-                            }
+                        }
                     }
                 </div>
             </div>
-                
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             <div class="rounded shadow text-white py-2 px-3" style="background: red;">
                 <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
                 <div class="mt-2" style="background: red;">
