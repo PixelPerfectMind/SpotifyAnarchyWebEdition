@@ -19,7 +19,7 @@ namespace SpotifyAnarchyWebEdition {
             routes.MapRoute(
                 name: "SpotifySearch",
                 url: "search",
-                defaults: new { controller = "Spotify", action = "SearchView" }
+                defaults: new { controller = "Search", action = "SearchView" }
             );
 
             // User profile page route

@@ -38,7 +38,8 @@
     </div>
 
     <div class="curtain" id="curtain" style="display: none;">
-        <div class="window" style="align-content: space-between;">
+
+        <div class="window" id="searchWindow" style="align-content: space-between;">
             <!-- Title bar -->
             <div style="display: flex; justify-content: space-between">
                 <!-- Close button -->
@@ -51,15 +52,17 @@
             </div>
 
 
-                <div style="display: flex; align-content: space-between;">
+                <div style="display: flex; align-content: space-between; margin:1.5rem 0;">
                     <input type="text" id="searchQuery" name="query" placeholder="Suchbegriff eingeben" />
                 </div>
 
                 <!-- Action buttons -->
-                <div>
-                    <a href="~/search">Erweiterte Suchseite öffnen</a>
-                    <button onclick="OpenCloseCurtain('close')">Abbruch</button>
-                    <button class="blueButton" onclick="RedirectToSearchView()">Suche</button>
+                <div style="display: flex; justify-content: space-between">
+                    <a href="~/search" style="margin: .5rem;">Suchseite öffnen</a>
+                    <div>
+                        <button onclick="OpenCloseCurtain('close')">Abbruch</button>
+                        <button class="blueButton" onclick="RedirectToSearchView()">Suche</button>
+                    </div>
                 </div>
         </div>
     </div>
@@ -84,12 +87,25 @@
     }
 
     function OpenCloseCurtain(action) {
+
+        var window = document.getElementById("searchWindow");
+        var curtain = document.getElementById("curtain");
+
         if (action == "open") {
+            curtain.style.opacity = "0";
+            window.style.scale = "0";
+
+            setTimeout(function () { curtain.style.opacity = "1"; window.style.scale = "1"; }, 24);
             document.getElementById("curtain").style.display = "flex";
+
             document.getElementById("body").classList.add("blocked");
+
         }
         else if (action == "close") {
-            document.getElementById("curtain").style.display = "none";
+            curtain.style.opacity = "0";
+            window.style.scale = "0";
+
+            setTimeout(function () { curtain.style.display = "none";}, 200);
             document.getElementById("body").classList.remove("blocked");
         }
     }

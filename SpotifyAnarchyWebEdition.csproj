@@ -164,6 +164,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SpotifyController.cs" />
     <Compile Include="Controllers\Spotify\ArtistController.cs" />
+    <Compile Include="Controllers\Spotify\SearchController.cs" />
     <Compile Include="Controllers\WebApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -262,7 +263,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Spotify\AuthCallback.cshtml" />
     <Content Include="Views\Profile.cshtml" />
-    <Content Include="Views\Spotify\SearchView.cshtml" />
+    <Content Include="Views\Search\SearchView.cshtml" />
     <Content Include="Views\Spotify\UserProfileView.cshtml" />
     <Content Include="Views\Spotify\AlbumView.cshtml" />
     <Content Include="Views\Spotify\PlaylistView.cshtml" />

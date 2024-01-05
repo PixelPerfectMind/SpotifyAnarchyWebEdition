@@ -93,7 +93,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                 }
 
                 var client = new RestClient();
-                var request = new RestRequest("https://api.spotify.com/v1/browse/new-releases?limit=10", Method.Get);
+                var request = new RestRequest("https://api.spotify.com/v1/browse/new-releases?limit=20", Method.Get);
                 request.AddHeader("Authorization", "Bearer " + Session["BearerTokenForPublicUses"]);
 
                 // Execute the request

@@ -48,21 +48,22 @@
     <div class="mt-4 mb-2">
         <h3>Die neusten Alben</h3>
         @{
-            try
-            {
-                <div class="row">
-                    @foreach (var item in ViewBag.NewAlbums)
-                    {
-                        <a class="col-2" href="/album?albumId=@item.Uri">
-                            <button>
-                                <div class="pt-1">
-                                    <img src="@item.ImageUrl" class="img-fluid rounded" />
-                                </div>
-                                <div class="mt-2">
-                                    <b>@item.Name</b>
-                                </div>
-                            </button>
-                        </a>
+            try {
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
+                    @{
+                        foreach (var item in ViewBag.NewAlbums)
+                        {
+                            <a href="/album?albumId=@item.Uri">
+                                <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                    <div style="margin-bottom: .8rem;">
+                                        <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                    </div>
+                                    <div>
+                                        <b>@item.Name</b>
+                                    </div>
+                                </button>
+                            </a>
+                        }
                     }
                 </div>
             }
