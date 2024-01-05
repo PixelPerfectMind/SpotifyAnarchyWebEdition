@@ -38,19 +38,15 @@
                     @{
                         if (ViewBag.UserFollowsPlaylist)
                         {
-                                        <div class="ml-2" style="padding-left: 1rem">
-                                            <a href="/playlist/unfollow?playlistId=@ViewBag.Playlist.SpotifyId">
-                                                <button>Entfolgen</button>
-                                            </a>
-                                        </div>
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <button onclick="showPlaylistInteractionCurtain()">Entfolgen</button>
+                            </div>
                         }
                         else
                         {
 
                             <div class="ml-2" style="padding-left: 1rem">
-                                <a href="/playlist/follow?playlistId=@ViewBag.Playlist.SpotifyId&scope=private">
-                                    <button class="blueButton">Folgen</button>
-                                </a>
+                                <button class="blueButton" onclick="showPlaylistInteractionCurtain()">Folgen</button>
                             </div>
                         }
                     }
@@ -99,6 +95,59 @@
             }
         </table>
 
+        <div class="curtain" id="playlistInteractionCurtain">
+            <div class="window" id="playlistInteractionWindow" style="align-content: space-between; margin-bottom: 0px;">
+                @{
+                    if (ViewBag.UserFollowsPlaylist)
+                    {
+                        <div style="display: flex; justify-content: space-between">
+                            <!-- Close button -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" onclick="hidePlaylistInteractionCurtain()">
+                                <circle cx="6" cy="6" r="5.75" fill="#E9685D" stroke="#D05245" stroke-width="0.5" />
+                            </svg>
+
+                            <b style="align-content: center;">Playlist entfolgen</b>
+                            <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" style="opacity: 0;" height="18" />
+                        </div>
+
+                        <p style="margin: 1rem 0; text-align: center;">Möchtest du die Playlist @ViewBag.Playlist.Name wirklich entfolgen?</p>
+
+                        <div style="display: flex; justify-content:end;">
+                            <button onclick="hidePlaylistInteractionCurtain()">Nein</button>
+                            <a href="/playlist/unfollow?playlistId=@ViewBag.Playlist.SpotifyId">
+                                <button class="blueButton">Ja</button>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="display: flex; justify-content: space-between">
+                            <!-- Close button -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" onclick="hidePlaylistInteractionCurtain()">
+                                <circle cx="6" cy="6" r="5.75" fill="#E9685D" stroke="#D05245" stroke-width="0.5" />
+                            </svg>
+
+                            <b style="align-content: center;">Playlist folgen</b>
+                            <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" style="opacity: 0;" height="18" />
+                        </div>
+
+                        <p style="margin: 1rem 0; text-align: center;">Sollen andere einsehen können, dass du diese Playlist folgst?</p>
+
+                        <div style="display: flex; justify-content: space-between;">
+                            <button onclick="hidePlaylistInteractionCurtain()">Abbrechen</button>
+                            <div>
+                                <a href="/playlist/follow?playlistId=@ViewBag.Playlist.SpotifyId&scope=false">
+                                    <button>Nein</button>
+                                </a>
+                                <a href="/playlist/follow?playlistId=@ViewBag.Playlist.SpotifyId&scope=true">
+                                    <button class="blueButton">Ja</button>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
 
     }
     catch (Exception ex)
@@ -115,3 +164,29 @@
         </div>
     }
 }
+
+<script>
+    var playlistInteractionCurtain = document.getElementById("playlistInteractionCurtain")
+    var playlistInteractionWindow = document.getElementById("playlistInteractionWindow")
+
+    playlistInteractionCurtain.style.display = "none";
+
+    function showPlaylistInteractionCurtain() {
+        playlistInteractionCurtain.style.opacity = "0";
+        playlistInteractionWindow.style.scale = "0";
+
+        setTimeout(function () { playlistInteractionCurtain.style.opacity = "1"; playlistInteractionWindow.style.scale = "1"; }, 24);
+        playlistInteractionCurtain.style.display = "flex";
+
+        document.getElementById("body").classList.add("blocked");
+    }
+
+    function hidePlaylistInteractionCurtain() {
+        playlistInteractionCurtain.style.opacity = "0";
+        playlistInteractionWindow.style.scale = "0";
+
+        setTimeout(function () { playlistInteractionCurtain.style.display = "none"; }, 200);
+        document.getElementById("body").classList.remove("blocked");
+    }
+
+</script>
