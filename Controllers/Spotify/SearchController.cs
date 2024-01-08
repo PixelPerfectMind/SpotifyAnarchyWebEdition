@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
+using SpotifyAnarchyWebEdition.Models.MediaElements;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
