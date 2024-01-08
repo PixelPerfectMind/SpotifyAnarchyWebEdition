@@ -173,6 +173,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DefaultValues.cs" />
+    <Compile Include="Models\Device.cs" />
     <Compile Include="Models\MediaElements.cs" />
     <Compile Include="Models\SpotifyUser.cs" />
     <Compile Include="Models\SpotifyUserProfileAPIResponse.cs" />
@@ -197,7 +198,12 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\CSS\ControlElements.css" />
     <Content Include="Content\CSS\SearchWindow.css" />
+    <Content Include="Content\Images\DeviceTypes\computer.png" />
+    <Content Include="Content\Images\DeviceTypes\smartphone.png" />
+    <Content Include="Content\Images\DeviceTypes\television.png" />
     <Content Include="Content\Images\Listen_on_spotify.png" />
+    <Content Include="Content\Images\DeviceTypes\speaker.png" />
+    <Content Include="Content\Images\unknown_item.png" />
     <Content Include="Content\Images\user_placeholder.png" />
     <Content Include="Content\svg\light\ic_email.svg" />
     <Content Include="Content\svg\light\ic_key.svg" />
