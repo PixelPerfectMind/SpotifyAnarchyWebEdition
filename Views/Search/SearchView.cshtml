@@ -103,20 +103,26 @@
             <!-- Albums area -->
             <div class="mt-4">
                 <h3>Alben (@ViewBag.Albums.Count Treffer)</h3>
-                <div class="row">
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
                         if (ViewBag.Albums.Count > 0)
                         {
                             foreach (var item in ViewBag.Albums)
                             {
-                                <div class="col-2 bg-white oauth-button">
-                                    @{ string url = item.Uri.Replace("spotify:album:", ""); }
-                                    <a href="/album?albumId=@url">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                        <h4>@item.Name</h4>
-                                        <p>@item.Artist</p>
-                                    </a>
-                                </div>
+                                string url = item.Uri.Replace("spotify:album:", "");
+                                <a href="/album?albumId=@url">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                        </div>
+                                        <div>
+                                            <b>@item.Name</b>
+                                        </div>
+                                        <div>
+                                            <span style="font-size: 1rem;">@item.Artist</span>
+                                        </div>
+                                    </button>
+                                </a>
                             }
                         }
                         else
@@ -130,20 +136,23 @@
             <!-- Playlist area -->
             <div class="mt-4">
                 <h3>Playlists (@ViewBag.Playlists.Count Treffer)</h3>
-                <div class="row">
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
                         if (ViewBag.Playlists.Count > 0)
                         {
                             foreach (var item in ViewBag.Playlists)
                             {
-                                <div class="col-2 bg-white oauth-button">
-                                    @{ string url = item.Uri.Replace("spotify:playlist:", ""); }
-                                    <a href="/playlist?playlistId=@url">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                        <h4>@item.Name</h4>
-                                        <p>@item.Description</p>
-                                    </a>
-                                </div>
+                                string url = item.Uri.Replace("spotify:playlist:", "");
+                                <a href="/playlist?playlistId=@url">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@item.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                        </div>
+                                        <div>
+                                            <b>@item.Name</b>
+                                        </div>
+                                    </button>
+                                </a>
                             }
                         }
                         else
@@ -158,19 +167,25 @@
             <!-- Artists area -->
             <div class="mt-4">
                 <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
-                <div class="row">
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
                         if (ViewBag.Artists.Count > 0)
                         {
                             foreach (var item in ViewBag.Artists)
                             {
-                                <div class="col-2 bg-white oauth-button">
-                                    <a href="/artist?artistId=@item.Id">
-                                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid" />
-                                        <h4>@item.Name</h4>
-                                        <p>@item.TotalFollowers</p>
-                                    </a>
-                                </div>
+                                <a href="/artist?artistId=@item.Id">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@item.ImageUrl" alt="@item.Name" class="object-fit-cover" style="height: 64px; width: 64px; border-radius:32px;" />
+                                        </div>
+                                        <div>
+                                            <b>@item.Name</b>
+                                        </div>
+                                        <div>
+                                            <span style="font-size: 1rem;">@item.TotalFollowers Follower</span>
+                                        </div>
+                                    </button>
+                                </a>
                             }
                         }
                         else
