@@ -168,6 +168,7 @@
     <Compile Include="Controllers\Spotify\PlaylistController.cs" />
     <Compile Include="Controllers\Spotify\SearchController.cs" />
     <Compile Include="Controllers\Spotify\UserProfileController.cs" />
+    <Compile Include="Controllers\Spotify\WebPlaybackController.cs" />
     <Compile Include="Controllers\WebApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -258,6 +259,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\WebPlayback.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -277,9 +279,11 @@
     <Content Include="Views\Album\AlbumView.cshtml" />
     <Content Include="Views\Playlist\PlaylistView.cshtml" />
     <Content Include="Views\Artist\ArtistView.cshtml" />
+    <Content Include="Views\WebPlayback\Playback.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Playback\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

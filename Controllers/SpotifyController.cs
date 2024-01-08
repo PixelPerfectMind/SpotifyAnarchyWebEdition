@@ -120,6 +120,7 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                         spotifyUser.ImageUrl = json["images"][0]["url"].ToString();
                         spotifyUser.Type = json["type"].ToString();
                         spotifyUser.Uri = json["uri"].ToString();
+                        spotifyUser.Product = json["product"].ToString();
 
                         // Save the SpotifyUser object in the session
                         Session["SpotifyUser"] = spotifyUser;

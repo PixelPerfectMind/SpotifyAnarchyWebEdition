@@ -1,11 +1,14 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace SpotifyAnarchyWebEdition {
+namespace SpotifyAnarchyWebEdition
+{
 
-    public class RouteConfig {
+    public class RouteConfig
+    {
 
-        public static void RegisterRoutes(RouteCollection routes) {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             // OAuth route
@@ -64,6 +67,13 @@ namespace SpotifyAnarchyWebEdition {
                 name: "ViewArtist",
                 url: "artist",
                 defaults: new { controller = "Artist", action = "ArtistView" }
+            );
+
+            // Web playback route
+            routes.MapRoute(
+                name: "ViewWebPlayback",
+                url: "playback",
+                defaults: new { controller = "WebPlayback", action = "Playback" }
             );
 
             // Logout
