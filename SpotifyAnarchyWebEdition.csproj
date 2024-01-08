@@ -176,7 +176,11 @@
     </Compile>
     <Compile Include="Models\DefaultValues.cs" />
     <Compile Include="Models\Device.cs" />
-    <Compile Include="Models\MediaElements.cs" />
+    <Compile Include="Models\MediaElements\Album.cs" />
+    <Compile Include="Models\MediaElements\Artist.cs" />
+    <Compile Include="Models\MediaElements\Category.cs" />
+    <Compile Include="Models\MediaElements\Playlist.cs" />
+    <Compile Include="Models\MediaElements\Song.cs" />
     <Compile Include="Models\SpotifyUser.cs" />
     <Compile Include="Models\SpotifyUserProfileAPIResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

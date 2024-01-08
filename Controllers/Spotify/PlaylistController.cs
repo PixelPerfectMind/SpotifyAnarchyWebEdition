@@ -1,21 +1,24 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
+using SpotifyAnarchyWebEdition.Models.MediaElements;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
+namespace SpotifyAnarchyWebEdition.Controllers.Spotify
+{
 
-    public class PlaylistController : Controller {
+    public class PlaylistController : Controller
+    {
 
         /// <summary>
         /// Opens the playlist page
         /// </summary>
-        public async Task<ActionResult> PlaylistView(string playlistId) {
+        public async Task<ActionResult> PlaylistView(string playlistId)
+        {
 
             if (Session["SpotifyUserProfileAPIResponse"] != null)
             {
@@ -80,14 +83,20 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
                         userFollowsPlaylistRequest.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
                         RestResponse userFollowsPlaylistResponse = await client.ExecuteAsync(userFollowsPlaylistRequest);
 
-                        if (userFollowsPlaylistResponse.StatusCode == System.Net.HttpStatusCode.OK) {
+                        if (userFollowsPlaylistResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
                             var userFollowsPlaylistJson = JArray.Parse(userFollowsPlaylistResponse.Content);
-                            if (userFollowsPlaylistJson[0].ToString() == "True") {
+                            if (userFollowsPlaylistJson[0].ToString() == "True")
+                            {
                                 ViewBag.UserFollowsPlaylist = true;
-                            } else {
+                            }
+                            else
+                            {
                                 ViewBag.UserFollowsPlaylist = false;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             ViewBag.UserFollowsPlaylist = false;
                         }
 
