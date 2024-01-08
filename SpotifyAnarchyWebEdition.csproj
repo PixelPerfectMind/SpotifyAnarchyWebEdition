@@ -170,6 +170,7 @@
     <Compile Include="Controllers\Spotify\UserProfileController.cs" />
     <Compile Include="Controllers\Spotify\WebPlaybackController.cs" />
     <Compile Include="Controllers\WebApiController.cs" />
+    <Compile Include="Controllers\WebApi\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
