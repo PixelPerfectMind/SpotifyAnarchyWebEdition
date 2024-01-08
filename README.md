@@ -17,7 +17,7 @@ A very simple Spotify Client, created with the ASP.NET framework, using the offi
  - [x] Add a simple API for retrieving user data by providing an access token
  - [ ] Outsource the program logic to a class library
  - [ ] UI/UX optimizations and redesign
- - [ ] Refactor models and classes as seperate files (many of them are currently stored together)
+ - [x] Refactor models and classes as seperate files (many of them are currently stored together)
 
 ## F.A.Q.
 
