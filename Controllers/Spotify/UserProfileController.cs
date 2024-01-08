@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using System;
@@ -7,27 +8,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
+namespace SpotifyAnarchyWebEdition.Controllers.Spotify
+{
 
-    public class UserProfileController : Controller {
+    public class UserProfileController : Controller
+    {
+
+        // Spotify user
+        SpotifyUser spotifyUser = new SpotifyUser();
+        SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
+
+        // Create ObservableCollection instance of Playlists and Devices
+        ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
+        ObservableCollection<Device> Devices = new ObservableCollection<Device>();
 
         /// <summary>
         /// Shows up the user profile page
         /// </summary>
-        public async Task<ActionResult> UserProfileView() {
+        public async Task<ActionResult> UserProfileView()
+        {
 
             if (Session["SpotifyUser"] != null)
             {
                 try
                 {
-                    SpotifyUser spotifyUser = new SpotifyUser();
                     spotifyUser = (SpotifyUser)Session["SpotifyUser"];
                     ViewBag.User = spotifyUser;
 
-                    ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
-
                     // Get current login
-                    SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
                     spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
 
                     // API request to get the user's playlists
@@ -35,7 +43,6 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
                     var request = new RestRequest("https://api.spotify.com/v1/me/playlists?limit=10&offset=0", Method.Get);
                     request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
                     RestResponse response = await client.ExecuteAsync(request);
-                    Console.WriteLine(response.Content);
 
                     // If response is OK, parse the response
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -54,7 +61,10 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
                             Playlists.Add(new Playlist(playlist["id"].ToString(), playlist["name"].ToString(), playlistImageUrl, playlist["description"].ToString(), playlist["uri"].ToString()));
                         }
 
+                        GetAvailableDevices();
+
                         ViewBag.Playlists = Playlists;
+                        ViewBag.Devices = Devices;
                     }
                     else
                     {
@@ -70,6 +80,48 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
             else
             {
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        private void GetAvailableDevices()
+        {
+            try
+            {
+                // API request to get the user's devices
+                var client = new RestClient();
+                var request = new RestRequest("https://api.spotify.com/v1/me/player/devices", Method.Get);
+                request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                RestResponse response = client.Execute(request);
+
+                // If response is OK, deserialize the response
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var json = JObject.Parse(response.Content);
+
+                    // Add devices to the list
+                    var devices = json["devices"].Children().ToList();
+                    foreach (var device in devices)
+                    {
+                        Devices.Add(new Device
+                        {
+                            Id = device["id"].ToString(),
+                            IsActive = device["is_active"].ToObject<bool>(),
+                            IsPrivateSession = device["is_private_session"].ToObject<bool>(),
+                            IsRestricted = device["is_restricted"].ToObject<bool>(),
+                            Name = device["name"].ToString(),
+                            Type = device["type"].ToString()
+                        });
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "Beim Holen deiner Geräte ist ein Fehler aufgetreten: " + response.Content;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
             }
         }
 

@@ -76,6 +76,42 @@
                 </div>
             </div>
 
+            <div style="margin-top: 32px">
+                <h3>Deine Geräte</h3>
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;">
+
+                    @{
+                        foreach (var device in ViewBag.Devices)
+                        {
+
+                            <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                <div style="margin-bottom: .8rem;">
+                                    <img src="@device.GetIconURL()" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                </div>
+
+                                <div>
+                                    <b>@device.Name</b>
+                                </div>
+
+                                <div>
+                                    @{
+                                        if (device.IsActive)
+                                        {
+                                            <span style="font-size: .75rem">Aktiv</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="font-size: .75rem">Inaktiv</span>
+                                        }
+                                    }
+                                </div>
+                            </button>
+                        }
+                    }
+
+                </div>
+            </div>
+
         }
         catch (Exception ex)
         {
