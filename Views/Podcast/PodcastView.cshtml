@@ -34,6 +34,23 @@
                         </div>
                     </div>
                 </td>
+                <td>
+                    @{
+                        if (ViewBag.IsFollowingPodcast)
+                        {
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <button onclick="showPodcastInteractionCurtain()">Entfolgen</button>
+                            </div>
+                        }
+                        else
+                        {
+
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <button class="blueButton" onclick="showPodcastInteractionCurtain()">Folgen</button>
+                            </div>
+                        }
+                    }
+                </td>
             </tr>
         </table>
 
@@ -77,7 +94,56 @@
                 }
             }
         </table>
+        <div class="curtain" id="podcastInteractionCurtain">
+            <div class="window" id="podcastInteractionWindow" style="align-content: space-between; margin-bottom: 0px;">
+                @{
+                    if (ViewBag.IsFollowingPodcast)
+                    {
+                        <div style="display: flex; justify-content: space-between">
+                            <!-- Close button -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" onclick="hidePodcastInteractionCurtain()">
+                                <circle cx="6" cy="6" r="5.75" fill="#E9685D" stroke="#D05245" stroke-width="0.5" />
+                            </svg>
 
+                            <b style="align-content: center;">Podcast entfolgen</b>
+                            <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" style="opacity: 0;" height="18" />
+                        </div>
+
+                        <p style="margin: 1rem 0; text-align: center;">Möchtest du den Podcast "@ViewBag.Podcast.Name" wirklich entfolgen?</p>
+
+                        <div style="display: flex; justify-content:end;">
+                            <button onclick="hidePodcastInteractionCurtain()">Nein</button>
+                            <a href="/podcast/unfollow?podcastId=@ViewBag.Podcast.SpotifyId">
+                                <button class="blueButton">Ja</button>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="display: flex; justify-content: space-between">
+                            <!-- Close button -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" onclick="hidePodcastInteractionCurtain()">
+                                <circle cx="6" cy="6" r="5.75" fill="#E9685D" stroke="#D05245" stroke-width="0.5" />
+                            </svg>
+
+                            <b style="align-content: center;">Podcast folgen</b>
+                            <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" style="opacity: 0;" height="18" />
+                        </div>
+
+                        <p style="margin: 1rem 0; text-align: center;">Willst du diesem Podcast folgen?</p>
+
+                        <div style="display: flex; justify-content: space-between;">
+                            <button onclick="hidePodcastInteractionCurtain()">Abbrechen</button>
+                            <div>
+                                <a href="/podcast/follow?podcastId=@ViewBag.Podcast.SpotifyId">
+                                    <button class="blueButton">Ja</button>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
 
     }
     catch (Exception ex)
@@ -94,3 +160,29 @@
         </div>
     }
 }
+<script>
+    var podcastInteractionCurtain = document.getElementById("podcastInteractionCurtain")
+    var podcastInteractionWindow = document.getElementById("podcastInteractionWindow")
+
+
+    function showPodcastInteractionCurtain() {
+        podcastInteractionCurtain.style.opacity = "0";
+        podcastInteractionWindow.style.scale = "0";
+
+        setTimeout(function () { podcastInteractionCurtain.style.opacity = "1"; podcastInteractionWindow.style.scale = "1"; }, 24);
+        podcastInteractionCurtain.style.display = "flex";
+
+        document.getElementById("body").classList.add("blocked");
+    }
+
+    function hidePodcastInteractionCurtain() {
+        podcastInteractionCurtain.style.opacity = "0";
+        podcastInteractionWindow.style.scale = "0";
+
+        setTimeout(function () { podcastInteractionCurtain.style.display = "none"; }, 200);
+        document.getElementById("body").classList.remove("blocked");
+    }
+
+    podcastInteractionCurtain.style.display = "none";
+
+</script>

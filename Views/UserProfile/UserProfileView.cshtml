@@ -47,6 +47,35 @@
             </div>
 
             <div style="margin-top: 32px;">
+                <h3>Deine Podcasts, die du folgst</h3>
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
+                    @{
+                        if (ViewBag.Podcasts.Count > 0)
+                        {
+
+                            foreach (var podcast in ViewBag.Podcasts)
+                            {
+                                <a href="/podcast?podcastId=@podcast.SpotifyId">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@podcast.ImageUrl" class="object-fit-cover" style="height: 64px; width: 64px; border-radius: .5rem;" />
+                                        </div>
+                                        <div>
+                                            <b>@podcast.Name</b>
+                                        </div>
+                                    </button>
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <b>Anscheinend hast du keine Playlist in deinem Spotify-Account hinterlegt</b>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div style="margin-top: 32px;">
                 <h3>Deine Playlists</h3>
                 <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{

@@ -22,6 +22,7 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
         // Create ObservableCollection instance of Playlists and Devices
         ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
         ObservableCollection<Device> Devices = new ObservableCollection<Device>();
+        ObservableCollection<Podcast> Podcasts = new ObservableCollection<Podcast>();
 
         /// <summary>
         /// Shows up the user profile page
@@ -70,6 +71,39 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
                     else
                     {
                         ViewBag.Error = "Error getting your playlists: " + response.Content;
+                    }
+
+                    // Get user's podcasts
+                    var requestPodcasts = new RestRequest("https://api.spotify.com/v1/me/shows", Method.Get);
+                    requestPodcasts.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                    RestResponse responsePodcasts = await client.ExecuteAsync(requestPodcasts);
+
+                    if(responsePodcasts.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        // Parse the response
+                        var json = JObject.Parse(responsePodcasts.Content);
+
+                        // Add podcasts to the list
+                        var podcasts = json["items"].Children().ToList();
+                        foreach (var podcast in podcasts)
+                        {
+                            // Get the first image from the images array
+                            var images = podcast["show"]["images"].Children();
+                            var podcastImageUrl = images.Last()["url"].ToString();
+
+                            // Add new podcast to the list
+                            Podcasts.Add(new Podcast { 
+                                SpotifyId =  podcast["show"]["id"].ToString(),
+                                Name = podcast["show"]["name"].ToString(),
+                                ImageUrl = podcastImageUrl
+                            });
+                        }
+
+                        ViewBag.Podcasts = Podcasts;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Error getting your podcasts: " + responsePodcasts.Content;
                     }
                 }
                 catch (Exception ex)
