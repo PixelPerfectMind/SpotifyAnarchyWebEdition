@@ -1,0 +1,96 @@
+﻿@{
+    try
+    {
+        ViewBag.Title = "Podcast-Ansicht";
+
+        <table style="height: 300px; width: 100%;">
+            <colgroup>
+                <col style="width: 300px;" />
+                <col style="width: calc(100% - 450px);" />
+                <col style="width: 150px;" />
+            </colgroup>
+            <tr>
+                <td>
+                    <!-- Podcast cover image -->
+                    <img src="@ViewBag.Podcast.ImageUrl" alt="Podcastcover für @ViewBag.Podcast.Name" height="300" width="300" class="shadow-lg rounded" />
+                </td>
+                <td>
+                    <div class="ml-2" style="padding-left: 1rem">
+                        <!-- Podcast metadata -->
+                        <h1>@ViewBag.Podcast.Name</h1>
+
+                        <div class="mt-1">
+                            Von @ViewBag.Podcast.Publisher
+                        </div>
+
+                        <div class="mt-1">
+                            @ViewBag.Podcast.TotalEpisodes Episoden
+                        </div>
+
+                        <div class="mt-1">
+                            <a class="oauth-button" href="@ViewBag.Podcast.SpotifyHref">
+                                <img src="~/Content/Images/Listen_on_spotify.png" height="32" alt="@ViewBag.Podcast.Name" />
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table style="width: 100%; margin-top: .8rem;">
+            <colgroup>
+                <col style="width: 64px;" />
+                <col style="width: calc(100% - 114px);" />
+                <col style="width: 150px;" />
+            </colgroup>
+            <tr style="background: #000000c2; color:azure; border-radius: .5rem .5rem 0 0">
+                <td></td>
+                <td class="text-center">
+                    Titel
+                </td>
+                <td class="text-center">
+                    Demo
+                </td>
+            </tr>
+            @{
+                foreach (var item in ViewBag.Podcast.Episodes)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.Name" height="64" width="64" />
+                        </td>
+                        <td>
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <h4>@item.Name</h4>
+                                <p>@ViewBag.Podcast.Name</p>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ml-2" style="padding-left: 1rem">
+                                <audio controls>
+                                    <source src="@item.AudioPreviewUrl">
+                                    Audio not supported
+                                </audio>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+
+
+    }
+    catch (Exception ex)
+    {
+
+        <div class="rounded shadow text-white p-2" style="background: red;">
+            <b>Ein Fehler ist beim Laden der Seite aufgetreten</b>
+            <div class="mt-2" style="background: red;">
+                <b>Frontend: </b>@ex.Message <br />
+            </div>
+            <div class="mt-2" style="background: red;">
+                <b>Backend: </b>@ViewBag.Error <br />
+            </div>
+        </div>
+    }
+}

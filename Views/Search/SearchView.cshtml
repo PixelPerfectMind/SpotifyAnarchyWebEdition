@@ -20,13 +20,13 @@
         <button class="blueButton" type="submit">Suche</button>
         <div class="mt-2">
             <select name="type">
-                <option value="track">Single</option>
-                <option value="album">Album</option>
-                <option value="artist">Künstler</option>
-                <option value="playlist">Playlist</option>
-                <option value="show">Show</option>
-                <option value="episode">Episode</option>
-                <option value="audiobook">Hörbuch</option>
+                <option value="track">🎶 Single</option>
+                <option value="album">💽 Album</option>
+                <option value="artist">🤵 Künstler</option>
+                <option value="playlist">📼 Playlist</option>
+                <option value="show">🎤 Podcast</option>
+                <option value="episode">🔊 Episode</option>
+                <option value="audiobook">🎧 Hörbuch</option>
             </select>
             <label for="market">Land: </label>
             @{
@@ -164,9 +164,9 @@
             </div>
 
 
-            <!-- Artists area -->
+            <!-- Podcasts area -->
             <div class="mt-4">
-                <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
+                <h3>Podcasts (@ViewBag.Artists.Count Treffer)</h3>
                 <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
                         if (ViewBag.Artists.Count > 0)
@@ -191,6 +191,35 @@
                         else
                         {
                             <b>Keine Künstler gefunden</b>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Podcasts area -->
+            <div class="mt-4">
+                <h3>Podcasts (@ViewBag.Podcasts.Count Treffer)</h3>
+                <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
+                    @{
+                        if (ViewBag.Podcasts.Count > 0)
+                        {
+                            foreach (var item in ViewBag.Podcasts)
+                            {
+                                <a href="/podcast?podcastId=@item.SpotifyId">
+                                    <button class="bigBaseButton" style="min-height: 12rem; min-width: 12rem; padding: .5rem;">
+                                        <div style="margin-bottom: .8rem;">
+                                            <img src="@item.ImageUrl" alt="@item.Name" class="object-fit-cover" style="height: 64px; width: 64px; border-radius:6px;" />
+                                        </div>
+                                        <div>
+                                            <b>@item.Name</b>
+                                        </div>
+                                    </button>
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <b>Keine Podcasts gefunden</b>
                         }
                     }
                 </div>

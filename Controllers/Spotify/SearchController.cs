@@ -11,7 +11,8 @@ using System.Web.Mvc;
 
 namespace SpotifyAnarchyWebEdition.Controllers.Spotify
 {
-    public class SearchController : Controller {
+    public class SearchController : Controller
+    {
 
         /// <summary>
         /// Opens the search page and/or performs a search
@@ -23,6 +24,7 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
             ObservableCollection<Playlist> Playlists = new ObservableCollection<Playlist>();
             ObservableCollection<Album> Albums = new ObservableCollection<Album>();
             ObservableCollection<Artist> Artists = new ObservableCollection<Artist>();
+            ObservableCollection<Podcast> Podcasts = new ObservableCollection<Podcast>();
 
             ViewBag.Query = Request.QueryString["query"];
             ViewBag.Market = Request.QueryString["market"];
@@ -128,11 +130,31 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
                     }
                     ViewBag.Artists = Artists;
 
+                    // If type is podcast, add the podcasts to the list
+                    if (Request.QueryString["type"].Contains("show"))
+                    {
+                        var podcasts = json["shows"]["items"].Children().ToList();
+                        foreach (var podcast in podcasts)
+                        {
+                            var podcastImages = podcast["images"].Children();
+                            var podcastImageUrl = podcastImages.Last()["url"].ToString();
+                            Podcasts.Add(new Podcast{
+                                SpotifyId = podcast["id"].ToString(),
+                                Name = podcast["name"].ToString(),
+                                ImageUrl = podcastImageUrl,
+                                SpotifyUri = podcast["uri"].ToString(),
+                                Publisher = podcast["publisher"].ToString(),
+                                TotalEpisodes = Convert.ToInt32(podcast["total_episodes"])
+                            });
+                        }
+                    }
+                    ViewBag.Podcasts = Podcasts;
+
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Content = "null";
-                    ViewBag.Error = ex.Message + ": " + ex.Data;
+                    ViewBag.Error = ex.Message + ": " + ex.InnerException;
                 }
             }
             return View();

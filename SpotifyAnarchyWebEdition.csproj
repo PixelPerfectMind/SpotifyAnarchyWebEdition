@@ -166,6 +166,7 @@
     <Compile Include="Controllers\Spotify\AlbumController.cs" />
     <Compile Include="Controllers\Spotify\ArtistController.cs" />
     <Compile Include="Controllers\Spotify\PlaylistController.cs" />
+    <Compile Include="Controllers\Spotify\PodcastController.cs" />
     <Compile Include="Controllers\Spotify\SearchController.cs" />
     <Compile Include="Controllers\Spotify\UserProfileController.cs" />
     <Compile Include="Controllers\Spotify\WebPlaybackController.cs" />
@@ -179,7 +180,9 @@
     <Compile Include="Models\MediaElements\Album.cs" />
     <Compile Include="Models\MediaElements\Artist.cs" />
     <Compile Include="Models\MediaElements\Category.cs" />
+    <Compile Include="Models\MediaElements\Episode.cs" />
     <Compile Include="Models\MediaElements\Playlist.cs" />
+    <Compile Include="Models\MediaElements\Podcast.cs" />
     <Compile Include="Models\MediaElements\Song.cs" />
     <Compile Include="Models\SpotifyUser.cs" />
     <Compile Include="Models\SpotifyUserProfileAPIResponse.cs" />
@@ -285,6 +288,7 @@
     <Content Include="Views\Playlist\PlaylistView.cshtml" />
     <Content Include="Views\Artist\ArtistView.cshtml" />
     <Content Include="Views\WebPlayback\Playback.cshtml" />
+    <Content Include="Views\Podcast\PodcastView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

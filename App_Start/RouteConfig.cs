@@ -69,6 +69,13 @@ namespace SpotifyAnarchyWebEdition
                 defaults: new { controller = "Artist", action = "ArtistView" }
             );
 
+            // View podcast route
+            routes.MapRoute(
+                name: "ViewPodcast",
+                url: "podcast",
+                defaults: new { controller = "Podcast", action = "PodcastView" }
+            );
+
             // Web playback route
             routes.MapRoute(
                 name: "ViewWebPlayback",
