@@ -19,13 +19,27 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
 
             try
             {
-                // Load instance of SpotifyUser from session
+                string BearerToken = "";
+                // Load instance of SpotifyUser from session, if it exists
                 SpotifyUserProfileAPIResponse spotifyUserProfileAPIResponse = new SpotifyUserProfileAPIResponse();
-                spotifyUserProfileAPIResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+                SpotifyUserProfileAPIResponse apiResponse = new SpotifyUserProfileAPIResponse();
+                if (Session["SpotifyUserProfileAPIResponse"] != null)
+                {
+                    apiResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+                    BearerToken = apiResponse.AccessToken;
+                }
+                else if (Session["BearerTokenForPublicUses"] != null)
+                {
+                    BearerToken = Session["BearerTokenForPublicUses"].ToString();
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
 
                 var client = new RestClient();
                 var request = new RestRequest("https://api.spotify.com/v1/albums/" + albumId, Method.Get);
-                request.AddHeader("Authorization", "Bearer " + spotifyUserProfileAPIResponse.AccessToken);
+                request.AddHeader("Authorization", "Bearer " + BearerToken);
                 RestResponse response = await client.ExecuteAsync(request);
                 Console.WriteLine(response.Content);
 
@@ -62,6 +76,7 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify {
                         });
                     }
                     album.Songs = Songs;
+                    ViewBag.HrefUrl = json["external_urls"]["spotify"].ToString();
                     ViewBag.Album = album;
                 }
 

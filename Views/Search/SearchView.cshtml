@@ -3,45 +3,63 @@
     ViewBag.Title = "Inhalte durchsuchen";
 }
 
-<h2>Inhalt durchsuchen</h2>
+@{
+    if (ViewBag.Query == null)
+    {
+        ViewBag.SearchFieldStyle = "margin-top: 50%; transform: translateY(-200%); text-align: center;";
+    }
+    else
+    {
+        ViewBag.SearchFieldStyle = "";
+    }
+    ViewBag.SearchQueryFieldStyle = "border-radius: 2.4rem; padding: .2rem 1rem;";
+}
 
-<form asp-controller="Spotify" asp-action="Search" method="get">
-    <p>
-        @{
-            if (ViewBag.Query != null)
-            {
-                <input type="text" name="query" placeholder="Never gonna give you up" value="@ViewBag.Query" />
-            }
-            else
-            {
-                <input type="text" name="query" placeholder="Last Christmas" />
-            }
-        }
-        <button class="blueButton" type="submit">Suche</button>
-        <div class="mt-2">
-            <select name="type">
-                <option value="track">🎶 Single</option>
-                <option value="album">💽 Album</option>
-                <option value="artist">🤵 Künstler</option>
-                <option value="playlist">📼 Playlist</option>
-                <option value="show">🎤 Podcast</option>
-                <option value="episode">🔊 Episode</option>
-                <option value="audiobook">🎧 Hörbuch</option>
-            </select>
-            <label for="market">Land: </label>
-            @{
-                if (ViewBag.Market != null)
-                {
-                    <input type="text" name="market" placeholder="US" value="@ViewBag.Market" style="width: 4rem" />
+<div style="@ViewBag.SearchFieldStyle">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <img src="/Content/svg/light/ic_search.svg" alt="Suchen" height="39" width="24" style="filter: invert(); margin-right: .5rem;">
+        <h2>Inhalt durchsuchen</h2>
+    </div>
+    <div>
+        <form asp-controller="Spotify" asp-action="Search" method="get">
+            <p>
+                @{
+                    if (ViewBag.Query != null)
+                    {
+                        <input type="text" name="query" style="@ViewBag.SearchQueryFieldStyle" placeholder="Never gonna give you up" value="@ViewBag.Query" />
+                    }
+                    else
+                    {
+                        <input type="text" name="query" style="@ViewBag.SearchQueryFieldStyle" placeholder="Last Christmas" />
+                    }
                 }
-                else
-                {
-                    <input type="text" name="market" placeholder="US" value="DE" style="width: 4rem" />
-                }
-            }
-        </div>
-    </p>
-</form>
+                <button class="blueButton" type="submit">Suche</button>
+                <div class="mt-2">
+                    <select name="type">
+                        <option value="track">🎶 Single</option>
+                        <option value="album">💽 Album</option>
+                        <option value="artist">🤵 Künstler</option>
+                        <option value="playlist">📼 Playlist</option>
+                        <option value="show">🎤 Podcast</option>
+                        <option value="episode">🔊 Episode</option>
+                        <option value="audiobook">🎧 Hörbuch</option>
+                    </select>
+                    <label for="market">Land: </label>
+                    @{
+                        if (ViewBag.Market != null)
+                        {
+                            <input type="text" name="market" placeholder="US" value="@ViewBag.Market" style="width: 4rem" />
+                        }
+                        else
+                        {
+                            <input type="text" name="market" placeholder="US" value="DE" style="width: 4rem" />
+                        }
+                    }
+                </div>
+            </p>
+        </form>
+    </div>
+</div>
 
 <hr />
 
@@ -164,9 +182,9 @@
             </div>
 
 
-            <!-- Podcasts area -->
+            <!-- Artists area -->
             <div class="mt-4">
-                <h3>Podcasts (@ViewBag.Artists.Count Treffer)</h3>
+                <h3>Künstler (@ViewBag.Artists.Count Treffer)</h3>
                 <div style="margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;">
                     @{
                         if (ViewBag.Artists.Count > 0)

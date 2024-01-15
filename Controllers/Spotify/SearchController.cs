@@ -3,10 +3,8 @@ using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using SpotifyAnarchyWebEdition.Models.MediaElements;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SpotifyAnarchyWebEdition.Controllers.Spotify
@@ -29,11 +27,18 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
             ViewBag.Query = Request.QueryString["query"];
             ViewBag.Market = Request.QueryString["market"];
 
+            string BearerToken = "";
+
             // Initialize SpotifyUserProfileAPIResponse
             SpotifyUserProfileAPIResponse apiResponse = new SpotifyUserProfileAPIResponse();
             if (Session["SpotifyUserProfileAPIResponse"] != null)
             {
                 apiResponse = (SpotifyUserProfileAPIResponse)Session["SpotifyUserProfileAPIResponse"];
+                BearerToken = apiResponse.AccessToken;
+            }
+            else if(Session["BearerTokenForPublicUses"] != null)
+            {
+                BearerToken = Session["BearerTokenForPublicUses"].ToString();
             }
             else
             {
@@ -49,7 +54,7 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
                 {
                     var client = new RestClient();
                     var request = new RestRequest("https://api.spotify.com/v1/search?q=" + ViewBag.Query + "&type=" + Request.QueryString["type"] + "&market=" + ViewBag.Market, Method.Get);
-                    request.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
+                    request.AddHeader("Authorization", "Bearer " + BearerToken);
                     RestResponse response = client.Execute(request);
 
                     // Check if response is OK
@@ -125,7 +130,11 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
                             var artistImages = artist["images"].Children();
                             var artistImageUrl = artistImages.Last()["url"].ToString();
                             var totalFollowers = Convert.ToInt32(artist["followers"]["total"]);
-                            Artists.Add(new Artist(artist["id"].ToString(), artist["name"].ToString(), artistImageUrl, totalFollowers));
+                            try
+                            {
+                                Artists.Add(new Artist(artist["id"].ToString(), artist["name"].ToString(), artistImageUrl, totalFollowers));
+                            } catch
+                            { }
                         }
                     }
                     ViewBag.Artists = Artists;
