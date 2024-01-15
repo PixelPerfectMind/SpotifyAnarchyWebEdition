@@ -188,6 +188,18 @@ namespace SpotifyAnarchyWebEdition
                 defaults: new { controller = "Spotify", action = "Logout" }
             );
 
+
+            /*  ╔====================╗
+                ║       ABOUT        ║
+                ╚====================╝  */
+
+            // About page without controller
+            routes.MapRoute(
+                name: "About",
+                url: "about",
+                defaults: new { controller = "Home", action = "About" }
+            );
+
             // Default fallback route
             routes.MapRoute(
                 name: "Default",

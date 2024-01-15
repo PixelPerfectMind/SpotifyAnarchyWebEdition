@@ -214,6 +214,7 @@
     <Content Include="Content\Images\DeviceTypes\speaker.png" />
     <Content Include="Content\Images\unknown_item.png" />
     <Content Include="Content\Images\user_placeholder.png" />
+    <Content Include="Content\svg\light\github-logo.svg" />
     <Content Include="Content\svg\light\ic_email.svg" />
     <Content Include="Content\svg\light\ic_key.svg" />
     <Content Include="Content\svg\light\ic_profile.svg" />
@@ -221,6 +222,7 @@
     <Content Include="Content\svg\light\ic_search.svg" />
     <Content Include="Content\Images\spotify-anarchy.logo.png" />
     <Content Include="Content\Images\Spotify_OAuth_button.png" />
+    <Content Include="Content\svg\light\spotify-logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\CSS\Site.css" />
@@ -289,7 +291,7 @@
     <Content Include="Views\Artist\ArtistView.cshtml" />
     <Content Include="Views\WebPlayback\Playback.cshtml" />
     <Content Include="Views\Podcast\PodcastView.cshtml" />
-    <Content Include="Views\About\About.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
