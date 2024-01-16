@@ -79,7 +79,7 @@ namespace SpotifyAnarchyWebEdition.Controllers.Spotify
                         SpotifyUser spotifyUser = new SpotifyUser();
                         spotifyUser = (SpotifyUser)Session["SpotifyUser"];
 
-                        var userFollowsPlaylistRequest = new RestRequest("https://api.spotify.com/v1/playlists/" + playlistId + "/followers/contains?ids=" + spotifyUser.SpotifyId, Method.Get);
+                        var userFollowsPlaylistRequest = new RestRequest("https://api.spotify.com/v1/playlists/" + playlistId + "/followers/contains?ids=" + spotifyUser.Id, Method.Get);
                         userFollowsPlaylistRequest.AddHeader("Authorization", "Bearer " + apiResponse.AccessToken);
                         RestResponse userFollowsPlaylistResponse = await client.ExecuteAsync(userFollowsPlaylistRequest);
 

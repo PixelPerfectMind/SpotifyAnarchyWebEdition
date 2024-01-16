@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
 
 namespace SpotifyAnarchyWebEdition
 {
@@ -14,10 +11,15 @@ namespace SpotifyAnarchyWebEdition
             // Web-API-Routen
             config.MapHttpAttributeRoutes();
 
+
+            /*  ╔==========================╗
+                ║ GET USER PROFILE DETAILS ║
+                ╚==========================╝  */
+
             // Login route
             config.Routes.MapHttpRoute(
                 name: "SpotifyLogin",
-                routeTemplate: "api/v1/UserDetails",
+                routeTemplate: "api/v1/me",
                 defaults: new { controller = "User", action = "Get" }
             );
 

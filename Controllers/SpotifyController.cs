@@ -88,51 +88,27 @@ namespace SpotifyAnarchyWebEdition.Controllers {
                     // Check if response is OK
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        // Parse the response and store it in a SpotifyUser object
+                        // Deserialize the response to store the details in a SpotifyUser object automatically
+                        SpotifyUser spotifyUser = new SpotifyUser();
+                        spotifyUser = JsonConvert.DeserializeObject<SpotifyUser>(response.Content);
+
+                        //// Parse the response to get additional information
                         var json = JObject.Parse(response.Content);
 
-                        SpotifyUser spotifyUser = new SpotifyUser();
-                        spotifyUser.Country = json["country"].ToString();
-                        spotifyUser.DisplayName = json["display_name"].ToString();
-                        spotifyUser.Email = json["email"].ToString();
-
-                        if (json["explicit_content"]["filter_enabled"].ToString() == "true")
-                        {
-                            spotifyUser.ExplicitContentEnabled = false;
-                        }
-                        else
-                        {
-                            spotifyUser.ExplicitContentEnabled = true;
-                        }
-
-                        if (json["explicit_content"]["filter_locked"].ToString() == "true")
-                        {
-                            spotifyUser.ExplicitContentAllowed = false;
-                        }
-                        else
-                        {
-                            spotifyUser.ExplicitContentAllowed = true;
-                        }
-
-                        spotifyUser.SpotifyProfileUrl = json["external_urls"]["spotify"].ToString();
+                        spotifyUser.ImageUrl = json["images"].First["url"].ToString();
                         spotifyUser.TotalFollowers = Convert.ToInt32(json["followers"]["total"]);
-                        spotifyUser.SpotifyId = json["id"].ToString();
-                        spotifyUser.ImageUrl = json["images"][0]["url"].ToString();
-                        spotifyUser.Type = json["type"].ToString();
-                        spotifyUser.Uri = json["uri"].ToString();
-                        spotifyUser.Product = json["product"].ToString();
 
                         // Save the SpotifyUser object in the session
                         Session["SpotifyUser"] = spotifyUser;
                     }
                     else
                     {
-                        ViewBag.Error = "Error getting your user profile: " + response.Content;
+                        throw new Exception("Error getting your user profile: " + response.Content);
                     }
                 }
                 else
                 {
-                    ViewBag.Error = "Error getting your user profile: You are not signed in.";
+                    throw new Exception("Error getting your user profile: You are not signed in.");
                 }
 
             }
