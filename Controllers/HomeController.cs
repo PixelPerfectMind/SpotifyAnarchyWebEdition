@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpotifyAnarchyWebEdition.Models;
 using SpotifyAnarchyWebEdition.Models.MediaElements;
@@ -7,36 +8,49 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
 
-namespace SpotifyAnarchyWebEdition.Controllers {
+namespace SpotifyAnarchyWebEdition.Controllers
+{
 
-    public class HomeController : Controller {
+    public class HomeController : Controller
+    {
 
-        public ActionResult Index() {
-            try {
-                if (Session["BearerTokenForPublicUses"] == null) {
+        public ActionResult Index()
+        {
+            try
+            {
+                if (Session["BearerTokenForPublicUses"] == null)
+                {
                     GetBasicBearerToken();
 
                     // Get newest albums
                     GetNewRecommandations();
-                } else {
+                }
+                else
+                {
                     // Get the newest albums from the session
                     NewRecommandations = (ObservableCollection<Album>)Session["NewestRecommandations"];
                 }
                 ViewBag.NewAlbums = NewRecommandations;
 
                 // Get current user
-                if (Session["SpotifyUser"] != null) {
-                    try {
+                if (Session["SpotifyUser"] != null)
+                {
+                    try
+                    {
                         SpotifyUser spotifyUser = new SpotifyUser();
                         spotifyUser = (SpotifyUser)Session["SpotifyUser"];
 
                         ViewBag.UserName = spotifyUser.DisplayName;
                         ViewBag.UserImagePath = spotifyUser.ImageUrl;
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         ViewBag.Error = ex.Message;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 ViewBag.Error = ex.Message;
             }
 
@@ -63,7 +77,8 @@ namespace SpotifyAnarchyWebEdition.Controllers {
         /// <summary>
         /// Get a new bearer token, which allows you to access the Spotify API
         /// </summary>
-        private void GetBasicBearerToken() {
+        private void GetBasicBearerToken()
+        {
             DefaultValues defaultValues = new DefaultValues();
 
             var client = new RestClient();
@@ -75,7 +90,8 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             RestResponse response = client.Execute(request);
 
             // Check if response is OK
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
                 // Parse the response
                 var json = JObject.Parse(response.Content);
                 var bearerToken = json["access_token"].ToString();
@@ -83,38 +99,56 @@ namespace SpotifyAnarchyWebEdition.Controllers {
             }
         }
 
-        private void GetNewRecommandations() {
+        private void GetNewRecommandations()
+        {
             // Get newest albums
-            try {
+            try
+            {
                 // Check if bearer token is already set
-                if (Session["BearerTokenForPublicUses"] == null) {
+                if (Session["BearerTokenForPublicUses"] == null)
+                {
                     GetBasicBearerToken();
                 }
 
-                var client = new RestClient();
-                var request = new RestRequest("https://api.spotify.com/v1/browse/new-releases?limit=20", Method.Get);
+                RestClient client = new RestClient();
+                RestRequest request = new RestRequest("https://api.spotify.com/v1/browse/new-releases?limit=20", Method.Get);
                 request.AddHeader("Authorization", "Bearer " + Session["BearerTokenForPublicUses"]);
 
                 // Execute the request
                 RestResponse response = client.Execute(request);
 
-                // Read the response
-                var responseString = response.Content;
-
-                // Parse the response
-                var json = JObject.Parse(responseString);
-                var albums = json["albums"]["items"].Children().ToList();
-
-                // Add the albums to the list
-                foreach (var album in albums) {
-                    NewRecommandations.Add(new Album(album["id"].ToString(), album["name"].ToString(), album["artists"][0]["name"].ToString(),
-                        album["images"][1]["url"].ToString(), album["uri"].ToString(), ""));
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw (new Exception("Error getting new albums:\n" + response.Content));
                 }
+                else
+                {
+                    // Read the response
+                    var responseString = response.Content;
 
-                // Save the list in the session
-                Session["NewestRecommandations"] = this.NewRecommandations;
-                ViewBag.NewAlbums = NewRecommandations;
-            } catch (Exception ex) {
+                    // Parse the response
+                    var json = JObject.Parse(responseString);
+                    var albums = json["albums"]["items"].Children().ToList();
+
+                    // Add the albums to the list
+                    foreach (var album in albums)
+                    {
+                        NewRecommandations.Add(new Album {
+                            Id = album["id"].ToString(),
+                            Name = album["name"].ToString(),
+                            Artist = album["artists"][0]["name"].ToString(),
+                            ImageUrl = album["images"][1]["url"].ToString(),
+                            Uri = album["uri"].ToString(),
+                            ReleaseDate = album["release_date"].ToString(),
+                        });
+                    }
+
+                    Session["NewestRecommandations"] = NewRecommandations;
+                    ViewBag.NewAlbums = NewRecommandations;
+                }
+            }
+            catch (Exception ex)
+            {
                 ViewBag.Error = ex.Message;
             }
         }

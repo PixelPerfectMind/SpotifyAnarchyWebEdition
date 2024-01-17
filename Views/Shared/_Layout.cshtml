@@ -1,17 +1,23 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Spotify Anarchy Web Edition</title>
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
     <link rel="stylesheet" href="~/Content/CSS/ControlElements.css" />
     <link rel="stylesheet" href="~/Content/CSS/Site.css" />
     <link rel="stylesheet" href="~/Content/CSS/SearchWindow.css" />
 </head>
+
 <body id="body">
+    <!-- Navigation bar -->
     <nav class="navbar" id="navbar">
         <div style="display: flex;">
             <a href="~/" class="navbar-brand">
@@ -29,14 +35,20 @@
 
         </div>
     </nav>
+
+    <!-- Page body -->
     <div class="container body-content" style="margin-top: 8rem">
         @RenderBody()
         <hr />
         <footer>
             <p>@DateTime.Now.Year - Spotify Anarchy Web Edition</p>
+            <div>
+                <a href="/about">Über</a>
+            </div>
         </footer>
     </div>
 
+    <!-- Curtain for search popup -->
     <div class="curtain" id="curtain" style="display: none;">
 
         <div class="window" id="searchWindow" style="align-content: space-between;">
@@ -52,71 +64,24 @@
             </div>
 
 
-                <div style="display: flex; align-content: space-between; margin:1.5rem 0;">
-                    <input type="text" id="searchQuery" name="query" placeholder="Suchbegriff eingeben" />
-                </div>
+            <div style="display: flex; align-content: space-between; margin:1.5rem 0;">
+                <input type="text" id="searchQuery" name="query" placeholder="Suchbegriff eingeben" />
+            </div>
 
-                <!-- Action buttons -->
-                <div style="display: flex; justify-content: space-between">
-                    <a href="~/search" style="margin: .5rem;">Suchseite öffnen</a>
-                    <div>
-                        <button onclick="OpenCloseCurtain('close')">Abbruch</button>
-                        <button class="blueButton" onclick="RedirectToSearchView()">Suche</button>
-                    </div>
+            <!-- Action buttons -->
+            <div style="display: flex; justify-content: space-between">
+                <a href="~/search" style="margin: .5rem;">Suchseite öffnen</a>
+                <div>
+                    <button onclick="OpenCloseCurtain('close')">Abbruch</button>
+                    <button class="blueButton" onclick="RedirectToSearchView()">Suche</button>
                 </div>
+            </div>
         </div>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script src="~/Content/Script/SearchPopup.js"></script>
 </body>
 </html>
-
-
-<script>
-    // On sroll down, add 'navbar-scrolled' class to navbar
-    window.onscroll = function () { scrollFunction() };
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 1) {
-            document.getElementById("navbar").classList.add("navbar-scrolled");
-        } else {
-            document.getElementById("navbar").classList.remove("navbar-scrolled");
-        }
-    }
-
-    function OpenCloseCurtain(action) {
-
-        var window = document.getElementById("searchWindow");
-        var curtain = document.getElementById("curtain");
-
-        if (action == "open") {
-            curtain.style.opacity = "0";
-            window.style.scale = "0";
-
-            setTimeout(function () { curtain.style.opacity = "1"; window.style.scale = "1"; }, 24);
-            document.getElementById("curtain").style.display = "flex";
-
-            document.getElementById("body").classList.add("blocked");
-
-        }
-        else if (action == "close") {
-            curtain.style.opacity = "0";
-            window.style.scale = "0";
-
-            setTimeout(function () { curtain.style.display = "none";}, 200);
-            document.getElementById("body").classList.remove("blocked");
-        }
-    }
-
-    function RedirectToSearchView() {
-        var query = document.getElementById('searchQuery').value;
-        query = query.replace(/ /g, "+");
-
-        let types = ["track", "album", "artist", "playlist", "show", "episode", "audiobook"].toString();
-        types = types.replace(/,/g, "%2C");
-
-        window.location.href = "/search?query=" + query + "&type=" + types + "&market=DE";
-    }
-</script>
