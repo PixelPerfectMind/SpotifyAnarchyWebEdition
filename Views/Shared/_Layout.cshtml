@@ -20,14 +20,16 @@
     <!-- Navigation bar -->
     <nav class="navbar" id="navbar">
         <div style="display: flex;">
-            <a href="~/" class="navbar-brand">
-                <img src="~/Content/Images/spotify-anarchy.logo.png" alt="su" style="height: 36px;" />
+            <a class="nav-link navBarLinkButton" onclick="OpenCloseCurtain('open')">
+                <img src="~/Content/svg/light/ic_home.svg" alt="Start" />
+                <b>Startseite</b>
             </a>
-            <!--  href="~/search" -->
+
             <a class="nav-link navBarLinkButton" onclick="OpenCloseCurtain('open')">
                 <img src="~/Content/svg/light/ic_search.svg" alt="Suchen" />
                 <b>Suche</b>
             </a>
+
             <a href="~/profile" class="nav-link navBarLinkButton">
                 <img src="~/Content/svg/light/ic_profile.svg" alt="Profil" />
                 <b>Profil</b>
@@ -42,9 +44,6 @@
         <hr />
         <footer>
             <p>@DateTime.Now.Year - Spotify Anarchy Web Edition</p>
-            <div>
-                <a href="/about">Über</a>
-            </div>
         </footer>
     </div>
 

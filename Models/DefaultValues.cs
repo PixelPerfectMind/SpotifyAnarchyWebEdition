@@ -7,22 +7,31 @@
     /// </summary>
     public class DefaultValues
     {
-
-        // Replace with your SpotifyApi credentials
+        // Replace with your Spotify API credentials
 
         /// <summary>
         /// Your SpotifyApi client id
         /// </summary>
-        internal readonly string ClientId = "3eac98750c8f4f4da6dbf4dc63d182b6";
+        public readonly string ClientId = "your client id";
 
         /// <summary>
         /// Your SpotifyApi client secret
         /// </summary>
-        internal readonly string ClientSecret = "c269c041a81542c0b33780048c187475";
+        public readonly string ClientSecret = "your client secret";
 
         /// <summary>
         /// A base64 encoded string of your client id and client secret, which is used for basic authorization
         /// </summary>
-        internal readonly string basicAuthorization = "M2VhYzk4NzUwYzhmNGY0ZGE2ZGJmNGRjNjNkMTgyYjY6YzI2OWMwNDFhODE1NDJjMGIzMzc4MDA0OGMxODc0NzU=";
+        public readonly string basicAuthorization = "your basic auth string";
+
+        /// <summary>
+        /// The redirect uri for the SpotifyApi
+        /// </summary>
+        public readonly string RedirectUri = "https://localhost:44394/oauth";
+
+        /// <summary>
+        /// The scopes for the SpotifyApi Authentification
+        /// </summary>
+        public readonly string Scopes = "user-read-private user-read-email playlist-read-collaborative playlist-read-private playlist-modify-public playlist-modify-private user-read-currently-playing user-read-playback-state user-read-playback-position user-follow-modify user-library-read user-library-modify";
     }
 }
